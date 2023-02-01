@@ -390,12 +390,7 @@ void If() {
 	}
 }
 void Return() {
-	if (c.type_ != "identifier") {
-		Exp();
-	}
-	else {
-		gl();
-	}
+	Exp();
 }
 void Cout() {
 	if (c.content_ != "<<") {
