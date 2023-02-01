@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="Lexeme.h" />
     <ClInclude Include="LexicalAnalyzer.h" />
+    <ClInclude Include="SyntaxAnalyzer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
