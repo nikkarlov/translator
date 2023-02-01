@@ -1,5 +1,9 @@
 #include "LexicalAnalyzer.h"
 int main() {
-	Analiz();
+	bool fl = 1;
+	std::vector<Lexeme> lex = Analiz(fl);
+	if (fl) {
+
+	}
 	return 0;
 }

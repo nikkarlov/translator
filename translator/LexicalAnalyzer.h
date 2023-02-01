@@ -42,7 +42,8 @@ bool DoubleOperation(const std::string& a) {
 	}
 	return false;
 }
-void Analiz() {
+std::vector<Lexeme> Analiz(bool& fl) {
+	fl = 1;
 	std::ifstream fin("officialWords.txt");
 	std::string line;
 	std::set<std::string> ofWords;
@@ -58,7 +59,6 @@ void Analiz() {
 	}
 	fin.close();
 	std::vector<Lexeme> vec;
-	bool fl = 1;
 	for (int i = 0; i < program.size(); i++) {
 		if (i + 1 < program.size() && program[i] == '/' && program[i + 1] == '/') {
 			while (i < program.size() && program[i] != '\n') {
@@ -141,14 +141,5 @@ void Analiz() {
 		}
 		fl = 0;
 	}
-	std::ofstream fout("output.txt");
-	if (fl) {
-		for (int i = 0; i < vec.size(); i++) {
-			fout << vec[i].content_ << " - " << vec[i].type_ << std::endl;
-		}
-	}
-	else {
-		fout << "invalid syntax";
-	}
-	fout.close();
+	return vec;
 }
