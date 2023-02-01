@@ -2,3 +2,7 @@ return
 for
 if
 while
+cout
+cin
+if
+else

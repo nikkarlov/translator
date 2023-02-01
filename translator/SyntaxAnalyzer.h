@@ -92,10 +92,15 @@ bool Prior9() {
 	return false;
 }
 void gl() {
-	if (i >= lexemes.size()) {
+	if (i > lexemes.size()) {
 		throw "end";
 	}
-	c = lexemes[i];
+	if (i == lexemes.size()) {
+		c.type_ = "end";
+	}
+	else {
+		c = lexemes[i];
+	}
 	i++;
 }
 bool String() {
@@ -155,15 +160,14 @@ void Type() {
 void Parameters() {
 	if (c.content_ != ")") {
 		Type();
-		gl();
 		if (c.type_ != "identifier") {
 			throw;
 		}
 		gl();
 	}
 	while (c.content_ == ",") {
-		Type();
 		gl();
+		Type();
 		if (c.type_ != "identifier") {
 			throw;
 		}
@@ -171,9 +175,12 @@ void Parameters() {
 	}
 }
 void Exp1() {
-	if (c.type_ == "identifier") {
+	if (c.type_ == "numeric literal") {
 		gl();
-		if (Prior1) {
+	}
+	else if (c.type_ == "identifier") {
+		gl();
+		if (Prior1()) {
 			gl();
 		}
 	}
@@ -286,8 +293,13 @@ void For() {
 		}
 		gl();
 		if (c.content_ == "=") {
-			Exp();
 			gl();
+			if (c.type_ == "string literal") {
+				gl();
+			}
+			else {
+				Exp();
+			}
 		}
 		while (c.content_ == ",") {
 			gl();
@@ -296,8 +308,13 @@ void For() {
 			}
 			gl();
 			if (c.content_ == "=") {
-				Exp();
 				gl();
+				if (c.type_ == "string literal") {
+					gl();
+				}
+				else {
+					Exp();
+				}
 			}
 		}
 		if (c.content_ != ";") {
@@ -310,8 +327,13 @@ void For() {
 		}
 		gl();
 		if (c.content_ == "=") {
-			Exp();
 			gl();
+			if (c.type_ == "string literal") {
+				gl();
+			}
+			else {
+				Exp();
+			}
 		}
 		while (c.content_ == ",") {
 			gl();
@@ -320,8 +342,13 @@ void For() {
 			}
 			gl();
 			if (c.content_ == "=") {
-				Exp();
 				gl();
+				if (c.type_ == "string literal") {
+					gl();
+				}
+				else {
+					Exp();
+				}
 			}
 		}
 		if (c.content_ != ";") {
@@ -355,6 +382,7 @@ void If() {
 	if (c.content_ != ")") {
 		throw;
 	}
+	gl();
 	Block();
 	if (c.content_ == "else") {
 		gl();
@@ -371,18 +399,28 @@ void Return() {
 }
 void Cout() {
 	if (c.content_ != "<<") {
-		throw;
+		throw "r";
 	}
 	gl();
-	Exp();
+	if (c.type_ == "string literal") {
+		gl();
+	}
+	else {
+		Exp();
+	}
 	while (c.content_ == "<<") {
 		gl();
-		Exp();
+		if (c.type_ == "string literal") {
+			gl();
+		}
+		else {
+			Exp();
+		}
 	}
 }
 void Cin() {
 	if (c.content_ != ">>") {
-		throw;
+		throw "r";
 	}
 	gl();
 	if (c.type_ != "identifier") {
@@ -392,7 +430,7 @@ void Cin() {
 	while (c.content_ == ">>") {
 		gl();
 		if (c.type_ != "identifier") {
-			throw;
+			throw "r";;
 		}
 		gl();
 	}
@@ -402,7 +440,7 @@ void Operator() {
 		gl();
 		Cin();
 		if (c.content_ != ";") {
-			throw;
+			throw "r";
 		}
 		gl();
 	}
@@ -410,7 +448,7 @@ void Operator() {
 		gl();
 		Cout();
 		if (c.content_ != ";") {
-			throw;
+			throw "r";
 		}
 		gl();
 	}
@@ -430,60 +468,74 @@ void Operator() {
 		gl();
 		Return();
 		if (c.content_ != ";") {
-			throw;
+			throw "r";;
 		}
 		gl();
 	}
 	else {
 		Exp;
 		if (c.content_ != ";") {
-			throw;
+			throw "r";;
 		}
 		gl();
 	}
 }
 void Block() {
 	if (c.content_ != "{") {
-		throw;
+		throw "r";;
 	}
 	gl();
-	if (Type_()) {
-		gl();
-		if (c.type_ != "identifier") {
-			throw;
-		}
-		gl();
-		if (c.content_ == "=") {
-			Exp();
-			gl();
-		}
-		while (c.content_ == ",") {
+	while (c.content_ != "}") {
+		if (Type_()) {
 			gl();
 			if (c.type_ != "identifier") {
 				throw;
 			}
 			gl();
 			if (c.content_ == "=") {
-				Exp();
 				gl();
+				if (c.type_ == "string literal") {
+					gl();
+				}
+				else {
+					Exp();
+				}
 			}
+			while (c.content_ == ",") {
+				gl();
+				if (c.type_ != "identifier") {
+					throw;
+				}
+				gl();
+				if (c.type_ == "string literal") {
+					gl();
+				}
+				else {
+					Exp();
+				}
+			}
+			if (c.content_ != ";") {
+				throw;
+			}
+			gl();
 		}
-		if (c.content_ != ";") {
-			throw;
+		else if (c.type_ == "identifier") {
+			Exp9();
+		}
+		else {
+			Operator();
 		}
 	}
-	else if (c.type_ == "identifier") {
-		Exp9();
+	if (c.content_ != "}") {
+		throw;
 	}
-	else {
-		Operator();
-	}
+	gl();
 }
 void Function() {
 	Type();
 	bool fl_main = 0;
 	if (c.content_ == "main") {
-		fl_main;
+		fl_main = 1;
 	}
 	else {
 		if (c.type_ != "identifier") {
@@ -508,17 +560,20 @@ void Function() {
 void Program() {
 	gl();
 	Function();
+	if (c.type_ != "end") {
+		throw "lishnie symbol";
+	}
 }
 
-std::string SyntaxAnalyzer(std::vector<Lexeme> lexemes_) {
+void SyntaxAnalyzer(std::vector<Lexeme> lexemes_) {
 	swap(lexemes, lexemes_);
 	try {
 		Program();
-		if (i < lexemes.size() - 1) {
+		if (i < lexemes.size()) {
 			throw;
 		}
 	}
-	catch (std::string str) {
+	catch (const char str[]) {
 		std::cout << "err";
 	}
 }
