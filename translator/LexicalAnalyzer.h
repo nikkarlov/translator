@@ -97,7 +97,12 @@ std::vector<Lexeme> Analiz(bool& fl) {
 					fl = 0;
 				}
 			}
-			vec.push_back({ str, "numeric literal" });
+			if (flDot) {
+				vec.push_back({ str, "numeric ld literal" });
+			}
+			else {
+				vec.push_back({ str, "numeric ll literal" });
+			}
 			i--;
 			continue;
 		}
