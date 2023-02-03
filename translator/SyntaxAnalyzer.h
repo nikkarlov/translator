@@ -515,7 +515,7 @@ void Declaration() {
 		if (fl_gl == true) {
 			throw "expected to get a symbol ;";
 		}
-		throw "expected to get a symbol }";
+		throw "expected to get a expression";
 	}
 	gl();
 }
