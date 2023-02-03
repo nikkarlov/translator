@@ -2,12 +2,12 @@ int gcd(int a, int b){
     if(b==0){
 	return a;
     }
-    return gcd(b, a%b);
-}
+    return gcd(b, a % b);
+	}
 int main()
 {
   a *= 5;
-  int a, b = 5;
+  a = 3; b = 5;
   a = 5;
   b = 8;
   cin >> a >> b;

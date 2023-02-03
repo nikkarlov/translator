@@ -526,14 +526,20 @@ void Block() {
 		throw "expected to get a symbol {";;
 	}
 	gl();
+    
 	while (c.content_ != "}") {
+        if (c.type_ == "end") {
+            throw "expected to get a symbol }";
+        }
 		if (Type_()) {
+            bool fl_gl = false;
 			gl();
 			if (c.type_ != "identifier") {
 				throw "variable decloration was expected";
 			}
 			gl();
 			if (c.content_ == "=") {
+                fl_gl = true;
 				gl();
 				if (c.type_ == "string literal") {
 					gl();
@@ -543,6 +549,7 @@ void Block() {
 				}
 			}
 			while (c.content_ == ",") {
+                fl_gl = true;
 				gl();
 				if (c.type_ != "identifier") {
 					throw "variable decloration was expected";
@@ -559,8 +566,11 @@ void Block() {
 				}
 			}
 			if (c.content_ != ";") {
-				throw "expected to get a symbol ;";
-			}
+                if (fl_gl == true) {
+                    throw "expected to get a symbol ;";
+                }
+                throw "expected to get a symbol }";
+            }
 			gl();
 		}
 		else if (c.type_ == "identifier") {
