@@ -27,7 +27,7 @@ bool Prior1() {
 		gl();
 		Exp();
 		if (c.content_ != "]") {
-			throw "r";
+			throw "expected to get a symbol ]";
 		}
 		return true;
 	}
@@ -35,7 +35,7 @@ bool Prior1() {
 		gl();
 		Exp();
 		if (c.content_ != ")") {
-			throw "r";
+			throw "expected to get a symbol )";
 		}
 		return true;
 	}
@@ -113,21 +113,21 @@ bool Array() {
 	if (c.content_ == "array") {
 		gl();
 		if (c.content_ != "<") {
-			throw "r";
+			throw "expected to get a symbol <";
 		}
 		gl();
 		Type();
 		if (c.content_ != ">") {
-			throw "r";
+			throw "expected to get a symbol >";
 		}
 		gl();
 		if (c.content_ != "[") {
-			throw "r";
+			throw "expected to get a symbol [";
 		}
 		gl();
 		Exp();
 		if (c.content_ != "]") {
-			throw "r";
+			throw "expected to get a symbol ]";
 		}
 		return true;
 	}
@@ -153,7 +153,7 @@ bool NumType() {
 }
 void Type() {
 	if (!(NumType() || ArrayType() || CharType())) {
-		throw "r";
+		throw "invalid data type";
 	}
 	gl();
 }
@@ -169,7 +169,7 @@ void Parameters() {
 		gl();
 		Type();
 		if (c.type_ != "identifier") {
-			throw "r";
+			throw "variable declaration was expected";
 		}
 		gl();
 	}
@@ -203,7 +203,7 @@ void Exp1() {
 			gl();
 			Enumeration();
 			if (c.content_ != ")") {
-				throw "r";
+				throw "expected to get a symbol )";
 			}
 			gl();
 		}
@@ -215,13 +215,13 @@ void Exp1() {
 		}
 	}
 	else if (c.content_ != "(") {
-		throw "r";
+		throw "expected to get a symbol (";
 	}
 	else {
 		gl();
 		Exp8();
 		if (c.content_ != ")") {
-			throw "r";
+			throw "expected to get a symbol )";
 		}
 		gl();
 	}
@@ -279,14 +279,14 @@ void Exp() {
 }
 void Lvalue() {
 	if (c.type_ != "identifier") {
-		throw "r";
+		throw "variable declaration was expected";
 	}
 	gl();
 	if (c.content_ == "[") {
 		gl();
 		Exp();
 		if (c.content_ != "]") {
-			throw "r";
+			throw "expected to get a symbol ]";
 		}
 		gl();
 	}
@@ -294,7 +294,7 @@ void Lvalue() {
 void Exp9() {
 	Lvalue();
 	if (!Prior9()) {
-		throw "r";
+		throw "expected assignment";
 	}
 	if (c.content_ == "=") {
 		gl();
@@ -312,25 +312,25 @@ void Exp9() {
 }
 void While() {
 	if (c.content_ != "(") {
-		throw "r";
+		throw "expected to get a symbol (";
 	}
 	gl();
 	Exp();
 	if (c.content_ != ")") {
-		throw "r";
+		throw "expected to get a symbol ] )";
 	}
 	gl();
 	Block();
 }
 void For() {
 	if (c.content_ != "(") {
-		throw "r";
+		throw "expected to get a symbol (";
 	}
 	gl();
 	if (Type_()) {
 		gl();
 		if (c.type_ != "identifier") {
-			throw "r";
+			throw "variable declaration was expected";
 		}
 		gl();
 		if (c.content_ == "=") {
@@ -345,7 +345,7 @@ void For() {
 		while (c.content_ == ",") {
 			gl();
 			if (c.type_ != "identifier") {
-				throw "r";
+				throw "variable declaration was expected";
 			}
 			gl();
 			if (c.content_ == "=") {
@@ -359,12 +359,12 @@ void For() {
 			}
 		}
 		if (c.content_ != ";") {
-			throw "r";
+			throw "expected to get a symbol ;";
 		}
 	}
 	else if (c.type_ == "identifier") {
 		if (c.type_ != "identifier") {
-			throw "r";
+			throw "variable declaration was expected";
 		}
 		gl();
 		if (c.content_ == "=") {
@@ -379,7 +379,7 @@ void For() {
 		while (c.content_ == ",") {
 			gl();
 			if (c.type_ != "identifier") {
-				throw "r";
+				throw "variable declaration was expected";
 			}
 			gl();
 			if (c.content_ == "=") {
@@ -393,35 +393,35 @@ void For() {
 			}
 		}
 		if (c.content_ != ";") {
-			throw "r";
+			throw "expected to get a symbol ;";
 		}
 	}
 	else if (c.content_ == ";") {
 		gl();
 	}
 	else {
-		throw "r";
+		throw "incorrect cycle definition";
 	}
 	Exp();
 	if (c.content_ != ";") {
-		throw "r";
+		throw " expected to get a symbol ;";
 	}
 	gl();
 	Exp();
 	if (c.content_ != ")") {
-		throw "r";
+		throw "expected to get a symbol )";
 	}
 	gl();
 	Block();
 }
 void If() {
 	if (c.content_ != "(") {
-		throw "r";
+		throw "expected to get a symbol (";
 	}
 	gl();
 	Exp();
 	if (c.content_ != ")") {
-		throw "r";
+		throw "expected to get a symbol )";
 	}
 	gl();
 	Block();
@@ -440,7 +440,7 @@ void Return() {
 }
 void Cout() {
 	if (c.content_ != "<<") {
-		throw "r";
+		throw "expected to get a symbols <<";
 	}
 	gl();
 	if (c.type_ == "string literal") {
@@ -461,17 +461,17 @@ void Cout() {
 }
 void Cin() {
 	if (c.content_ != ">>") {
-		throw "r";
+		throw "expected to get a symbols >>";
 	}
 	gl();
 	if (c.type_ != "identifier") {
-		throw "r";
+		throw "variable declaration was expected";
 	}
 	gl();
 	while (c.content_ == ">>") {
 		gl();
 		if (c.type_ != "identifier") {
-			throw "r";;
+			throw "variable declaration was expected";;
 		}
 		gl();
 	}
@@ -481,7 +481,7 @@ void Operator() {
 		gl();
 		Cin();
 		if (c.content_ != ";") {
-			throw "r";
+			throw "expected to get a symbol ;";
 		}
 		gl();
 	}
@@ -489,7 +489,7 @@ void Operator() {
 		gl();
 		Cout();
 		if (c.content_ != ";") {
-			throw "r";
+			throw "expected to get a symbol ;";
 		}
 		gl();
 	}
@@ -509,28 +509,28 @@ void Operator() {
 		gl();
 		Return();
 		if (c.content_ != ";") {
-			throw "r";;
+			throw "expected to get a symbol ;";;
 		}
 		gl();
 	}
 	else {
 		Exp();
 		if (c.content_ != ";") {
-			throw "r";;
+			throw "expected to get a symbol ;";;
 		}
 		gl();
 	}
 }
 void Block() {
 	if (c.content_ != "{") {
-		throw "r";;
+		throw "expected to get a symbol {";;
 	}
 	gl();
 	while (c.content_ != "}") {
 		if (Type_()) {
 			gl();
 			if (c.type_ != "identifier") {
-				throw "r";
+				throw "variable decloration was expected";
 			}
 			gl();
 			if (c.content_ == "=") {
@@ -545,7 +545,7 @@ void Block() {
 			while (c.content_ == ",") {
 				gl();
 				if (c.type_ != "identifier") {
-					throw "r";
+					throw "variable decloration was expected";
 				}
 				gl();
 				if (c.content_ == "=") {
@@ -559,14 +559,14 @@ void Block() {
 				}
 			}
 			if (c.content_ != ";") {
-				throw "r";
+				throw "expected to get a symbol ;";
 			}
 			gl();
 		}
 		else if (c.type_ == "identifier") {
 			Exp9();
 			if (c.content_ != ";") {
-				throw "r";
+				throw "expected to get a symbols ;";
 			}
 			gl();
 		}
@@ -575,7 +575,7 @@ void Block() {
 		}
 	}
 	if (c.content_ != "}") {
-		throw "r";
+		throw "expected to get a symbols }";
 	}
 	gl();
 }
@@ -587,17 +587,17 @@ void Function() {
 	}
 	else {
 		if (c.type_ != "identifier") {
-			throw "r";
+			throw "variable decloration was expected";
 		}
 	}
 	gl();
 	if (c.content_ != "(") {
-		throw "r";
+		throw "expected to get a symbol (";
 	}
 	gl();
 	Parameters();
 	if (c.content_ != ")") {
-		throw "r";
+		throw "expected to get a symbol )";
 	}
 	gl();
 	Block();
@@ -609,7 +609,7 @@ void Program() {
 	gl();
 	Function();
 	if (c.type_ != "end") {
-		throw "r";
+		throw "";
 	}
 }
 
@@ -618,10 +618,10 @@ void SyntaxAnalyzer(std::vector<Lexeme> lexemes_) {
 	try {
 		Program();
 		if (i < lexemes.size()) {
-			throw "r";
+			throw "extra characters at the end of the program";
 		}
 	}
 	catch (const char str[]) {
-		std::cout << "err";
+		std::cout << str;
 	}
 }
