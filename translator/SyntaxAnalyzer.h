@@ -11,6 +11,7 @@ void Exp();
 void Type();
 void Block();
 void Exp8();
+void Global();
 
 bool Type_() {
 	if (c.content_ == "int" || c.content_ == "ll" || c.content_ == "float" || c.content_ == "ld" ||
@@ -476,6 +477,48 @@ void Cin() {
 		gl();
 	}
 }
+void Declaration() {
+	bool fl_gl = false;
+	gl();
+	if (c.type_ != "identifier") {
+		throw "variable decloration was expected";
+	}
+	gl();
+	if (c.content_ == "=") {
+		fl_gl = true;
+		gl();
+		if (c.type_ == "string literal") {
+			gl();
+		}
+		else {
+			Exp();
+		}
+	}
+	while (c.content_ == ",") {
+		fl_gl = true;
+		gl();
+		if (c.type_ != "identifier") {
+			throw "variable decloration was expected";
+		}
+		gl();
+		if (c.content_ == "=") {
+			gl();
+			if (c.type_ == "string literal") {
+				gl();
+			}
+			else {
+				Exp();
+			}
+		}
+	}
+	if (c.content_ != ";") {
+		if (fl_gl == true) {
+			throw "expected to get a symbol ;";
+		}
+		throw "expected to get a symbol }";
+	}
+	gl();
+}
 void Operator() {
 	if (c.content_ == "cin") {
 		gl();
@@ -532,46 +575,7 @@ void Block() {
             throw "expected to get a symbol }";
         }
 		if (Type_()) {
-            bool fl_gl = false;
-			gl();
-			if (c.type_ != "identifier") {
-				throw "variable decloration was expected";
-			}
-			gl();
-			if (c.content_ == "=") {
-                fl_gl = true;
-				gl();
-				if (c.type_ == "string literal") {
-					gl();
-				}
-				else {
-					Exp();
-				}
-			}
-			while (c.content_ == ",") {
-                fl_gl = true;
-				gl();
-				if (c.type_ != "identifier") {
-					throw "variable decloration was expected";
-				}
-				gl();
-				if (c.content_ == "=") {
-					gl();
-					if (c.type_ == "string literal") {
-						gl();
-					}
-					else {
-						Exp();
-					}
-				}
-			}
-			if (c.content_ != ";") {
-                if (fl_gl == true) {
-                    throw "expected to get a symbol ;";
-                }
-                throw "expected to get a symbol }";
-            }
-			gl();
+			Declaration();
 		}
 		else if (c.type_ == "identifier") {
 			Exp9();
@@ -615,13 +619,27 @@ void Function() {
 	gl();
 	Block();
 	if (!fl_main) {
+		Global();
+	}  
+}
+void Global() {
+	gl();
+	gl();
+	if (c.content_ == "(") {
+		i -= 3;
+		gl();
 		Function();
 	}
-   
+	else {
+		i -= 3;
+		gl();
+		Declaration();
+		Global();
+	}
 }
 void Program() {
 	gl();
-	Function();
+	Global();
 	if (c.type_ != "end") {
 		throw "extra characters at the end of the program";
 	}
