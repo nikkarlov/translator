@@ -216,7 +216,7 @@ void Exp1() {
 		}
 	}
 	else if (c.content_ != "(") {
-		throw "expected to get a symbol (";
+		throw "expected to get a expression";
 	}
 	else {
 		gl();
