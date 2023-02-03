@@ -580,6 +580,9 @@ void Block() {
 	gl();
 }
 void Function() {
+    if (i >= lexemes.size() - 1) {
+        throw "the main declaration is missing";
+    }
 	Type();
 	bool fl_main = 0;
 	if (c.content_ == "main") {
@@ -587,7 +590,7 @@ void Function() {
 	}
 	else {
 		if (c.type_ != "identifier") {
-			throw "variable decloration was expected";
+			throw "missing function name";
 		}
 	}
 	gl();
@@ -604,6 +607,7 @@ void Function() {
 	if (!fl_main) {
 		Function();
 	}
+   
 }
 void Program() {
 	gl();

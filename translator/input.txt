@@ -14,4 +14,4 @@ int main()
   cout << "gcd(a, b)";
   cout << a << b;
   cout << gcd(a, b) << gcd(gcd(5 % 4, a), b);
-}
+ }
