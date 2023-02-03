@@ -609,7 +609,7 @@ void Program() {
 	gl();
 	Function();
 	if (c.type_ != "end") {
-		throw "";
+		throw "extra characters at the end of the program";
 	}
 }
 
@@ -618,7 +618,7 @@ void SyntaxAnalyzer(std::vector<Lexeme> lexemes_) {
 	try {
 		Program();
 		if (i < lexemes.size()) {
-			throw "extra characters at the end of the program";
+			throw "characters are expected to enter";
 		}
 	}
 	catch (const char str[]) {
