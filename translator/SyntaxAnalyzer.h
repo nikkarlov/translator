@@ -578,11 +578,30 @@ void Block() {
 			Declaration();
 		}
 		else if (c.type_ == "identifier") {
-			Exp9();
-			if (c.content_ != ";") {
-				throw "expected to get a symbols ;";
-			}
 			gl();
+			if (c.content_ == "(" || c.content_ == "++" || c.content_ == "--") {
+				if (c.content_ == "(") {
+					gl();
+					Enumeration();
+					if (c.content_ != ")") {
+						"expected to get a symbols )";
+					}
+				}
+				gl();
+				if (c.content_ != ";") {
+					throw "expected to get a symbols ;";
+				}
+				gl();
+			}
+			else {
+				i -= 2;
+				gl();
+				Exp9();
+				if (c.content_ != ";") {
+					throw "expected to get a symbols ;";
+				}
+				gl();
+			}
 		}
 		else {
 			Operator();

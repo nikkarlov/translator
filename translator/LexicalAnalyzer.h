@@ -35,9 +35,9 @@ bool Operation(const char& a) {
 	return false;
 }
 bool DoubleOperation(const std::string& a) {
-	if (a == "+= " || a == "-=" || a == "*=" || a == "/=" || a == "%=" || a == "&=" ||
+	if (a == "+=" || a == "-=" || a == "*=" || a == "/=" || a == "%=" || a == "&=" ||
 		a == "!=" || a == "~=" || a == "==" || a == ">=" || a == "<=" ||
-		a == "&&" || a == "||" || a == "<<" || a == ">>") {
+		a == "&&" || a == "||" || a == "<<" || a == ">>" || a == "++" || a == "--") {
 		return true;
 	}
 	return false;

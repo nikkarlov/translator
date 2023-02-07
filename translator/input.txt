@@ -1,17 +1,23 @@
 int b = 4;
 int gcd(int a, int b){
     if(b==0){
-	    return a;
+      return a;
     }
     return gcd(b, a % b);
 }
 int main()
 {
-  a *= 5;
+  a += 5;
   a = 3; b = 5;
   a = 5;
   b = 8;
   cin >> a >> b;
+  a++;
+  ++a;
+  a--;
+  a = a--;
+  a = a++ + --a;
+  a(5);
   cout << "gcd(a, b)";
   cout << a << b;
   cout << gcd(a, b) << gcd(gcd(5 % 4, a), b);
