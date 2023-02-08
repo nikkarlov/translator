@@ -144,7 +144,8 @@ std::vector<Lexeme> Analiz(bool& fl) {
 		if (program[i] == ' ' || program[i] == '\t' || program[i] == '\n') {
 			continue;
 		}
-		fl = 0;
+        fl = 0;
+		vec.push_back({ std::string(1, program[i]), "incorrect symbol" });
 	}
 	return vec;
 }

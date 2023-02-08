@@ -101,6 +101,9 @@ void gl() {
 	}
 	else {
 		c = lexemes[i];
+        if (c.type_ == "incorrect symbol") {
+            throw "incorrect symbol";
+        }
 	}
 	i++;
 }
