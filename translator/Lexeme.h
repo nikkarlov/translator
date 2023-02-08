@@ -3,8 +3,10 @@
 class Lexeme {
  public:
 	Lexeme(){}
-	Lexeme(std::string a, std::string b) :
+	Lexeme(std::string a, std::string b, int c) :
 		content_(a),
-		type_(b){}
-	std::string content_, type_;
+		type_(b),
+        num_of_string_(c){}
+    std::string content_, type_;
+    int num_of_string_;
 };

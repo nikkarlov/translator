@@ -52,6 +52,7 @@ std::vector<Lexeme> Analiz(bool& fl) {
 	}
 	fin.close();
 	fin.open("input.txt");
+    std::vector<int> nums;
 	std::string program;
 	while (getline(fin, line)) {
 		program += line;
@@ -59,6 +60,7 @@ std::vector<Lexeme> Analiz(bool& fl) {
 	}
 	fin.close();
 	std::vector<Lexeme> vec;
+    int j = 1;
 	for (int i = 0; i < program.size(); i++) {
 		if (i + 1 < program.size() && program[i] == '/' && program[i + 1] == '/') {
 			while (i < program.size() && program[i] != '\n') {
@@ -74,10 +76,10 @@ std::vector<Lexeme> Analiz(bool& fl) {
 				i++;
 			}
 			if (ofWords.find(str) != ofWords.end()) {
-				vec.push_back({str, "offcial word"});
+				vec.push_back({str, "offcial word", j});
 			}
 			else {
-				vec.push_back({ str, "identifier" });
+				vec.push_back({ str, "identifier", j});
 			}
 			i--;
 			continue;
@@ -98,10 +100,10 @@ std::vector<Lexeme> Analiz(bool& fl) {
 				}
 			}
 			if (flDot) {
-				vec.push_back({ str, "numeric ld literal" });
+				vec.push_back({ str, "numeric ld literal", j});
 			}
 			else {
-				vec.push_back({ str, "numeric ll literal" });
+				vec.push_back({ str, "numeric ll literal", j});
 			}
 			i--;
 			continue;
@@ -111,24 +113,24 @@ std::vector<Lexeme> Analiz(bool& fl) {
 				std::string str;
 				str += program[i], str += program[i + 1];
 				if (DoubleOperation(str)) {
-					vec.push_back({ str, "operation" });
+					vec.push_back({ str, "operation", j});
 					i++;
 					continue;
 				}
 			}
-			vec.push_back({ std::string(1, program[i]), "operation" });
+			vec.push_back({ std::string(1, program[i]), "operation", j});
 			continue;
 		}
 		if (Punctuation(program[i])) {
-			vec.push_back({ std::string (1, program[i]), "punctuation"});
+			vec.push_back({ std::string (1, program[i]), "punctuation", j});
 			continue;
 		}
 		if (program[i] == '(' || program[i] == ')') {
-			vec.push_back({ std::string(1, program[i]), "round brackets" });
+			vec.push_back({ std::string(1, program[i]), "round brackets", j});
 			continue;
 		}
 		if (program[i] == '[' || program[i] == ']') {
-			vec.push_back({ std::string(1, program[i]), "square brackets" });
+			vec.push_back({ std::string(1, program[i]), "square brackets", j});
 			continue;
 		}
 		if (program[i] == '"') {
@@ -138,14 +140,15 @@ std::vector<Lexeme> Analiz(bool& fl) {
 				str += program[i];
 				i++;
 			}
-			vec.push_back({ str, "string literal" });
+			vec.push_back({ str, "string literal", j});
 			continue;
 		}
 		if (program[i] == ' ' || program[i] == '\t' || program[i] == '\n') {
+            if (program[i] == '\n') j++;
 			continue;
 		}
         fl = 0;
-		vec.push_back({ std::string(1, program[i]), "incorrect symbol" });
+		vec.push_back({ std::string(1, program[i]), "incorrect symbol", j});
 	}
 	return vec;
 }

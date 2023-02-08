@@ -4,24 +4,43 @@ int gcd(int a, int b){
       return a;
     }
     return gcd(b, a % b);
+
+	//gcd(int a, int b){
+    //if(b==0){
+    //  return a;
+    //}
+    //return gcd(b, a % b);
+//}
 }
+
+
+
 int main()
 {
-  a += 5;
-  a = 3; b = 5;
+  a = 5;
+  a = 3; a = 5;
   a = 5 + a--;
   cin >> a >> b;
   a++;
+  
   ++a;
   string sas = "dd";
   a--;
   a = a--;
-  a = a++ + --a;
+  a = a++ + f(A) - --a;
   a[a+2] = 3;
   a[3] = 2;
   array<array <int> [3]>[2] mass;
   a(5);
   cout << "gcd(a, b)";
   cout << a << b;
-  cout << gcd(a, b) << gcd(gcd(5 % 4, a), b);
+  if (a > b) {}
+  cout << gcd(a, b, c, c) << gcd(gcd(5 % 4, a), b);
+  for (int i = 0; i < 10;i++){
+		b+=c;
+  }
+
+  while ((c != 10)){
+	c--;
+  }
  }
