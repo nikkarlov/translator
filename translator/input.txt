@@ -9,14 +9,17 @@ int main()
 {
   a += 5;
   a = 3; b = 5;
-  a = 5;
-  b = 8;
+  a = 5 + a--;
   cin >> a >> b;
   a++;
   ++a;
+  string sas = "dd";
   a--;
   a = a--;
   a = a++ + --a;
+  a[a+2] = 3;
+  a[3] = 2;
+  array<array <int> [3]>[2] mass;
   a(5);
   cout << "gcd(a, b)";
   cout << a << b;

@@ -479,6 +479,7 @@ void Cin() {
 }
 void Declaration() {
 	bool fl_gl = false;
+    Array();
 	gl();
 	if (c.type_ != "identifier") {
 		throw "variable decloration was expected";

@@ -28,7 +28,7 @@ bool Punctuation(const char& a) {
 	return false;
 }
 bool Operation(const char& a) {
-	if (a == '+' || a == '-' || a == '*' || a == '/' || a == '%' ||
+	if (a == '+' || a == '-' || a == '*' || a == '/' || a == '%' || a == '|' ||
 		a == '&' || a == '!' || a == '~' || a == '=' || a == '>' || a == '<') {
 		return true;
 	}
