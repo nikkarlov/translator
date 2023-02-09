@@ -6,3 +6,4 @@ cout
 cin
 if
 else
+void

@@ -161,6 +161,12 @@ void Type() {
 	}
 	gl();
 }
+void FunctionType() {
+    if (!(NumType() || ArrayType() || CharType() || c.content_ == "void")) {
+        throw std::string("invalid data type in string " + std::to_string(c.num_of_string_));
+    }
+    gl();
+}
 void Parameters() {
 	if (c.content_ != ")") {
 		Type();
@@ -438,9 +444,9 @@ void Return() {
 	if (c.type_ == "string literal") {
 		gl();
 	}
-	else {
-		Exp();
-	}
+    else if (c.content_ != ";") {
+        Exp();
+    }
 }
 void Cout() {
 	if (c.content_ != "<<") {
@@ -620,7 +626,7 @@ void Function() {
     if (i >= lexemes.size() - 1) {
         throw std::string("the main declaration is missing in string " + std::to_string(c.num_of_string_));
     }
-	Type();
+	FunctionType();
 	bool fl_main = 0;
 	if (c.content_ == "main") {
 		fl_main = 1;
