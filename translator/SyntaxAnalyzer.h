@@ -28,7 +28,7 @@ bool Prior1() {
 		gl();
 		Exp();
 		if (c.content_ != "]") {
-			throw std::string("expected to get a symbol ] in string " + std::to_string(c.num_of_string_));
+			throw std::string("expected to get a symbol ] in line " + std::to_string(c.num_of_string_));
 		}
 		return true;
 	}
@@ -36,7 +36,7 @@ bool Prior1() {
 		gl();
 		Exp();
 		if (c.content_ != ")") {
-			throw std::string("expected to get a symbol ) in string " + std::to_string(c.num_of_string_));
+			throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
 		}
 		return true;
 	}
@@ -102,7 +102,7 @@ void gl() {
 	else {
 		c = lexemes[i];
         if (c.type_ == "incorrect symbol") {
-            throw std::string("incorrect symbol in string " + std::to_string(c.num_of_string_));
+            throw std::string("incorrect symbol in line " + std::to_string(c.num_of_string_));
         }
 	}
 	i++;
@@ -117,21 +117,21 @@ bool Array() {
 	if (c.content_ == "array") {
 		gl();
 		if (c.content_ != "<") {
-			throw std::string("expected to get a symbol < in string " + std::to_string(c.num_of_string_));
+			throw std::string("expected to get a symbol < in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 		Type();
 		if (c.content_ != ">") {
-			throw std::string("expected to get a symbol > in string " + std::to_string(c.num_of_string_));
+			throw std::string("expected to get a symbol > in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 		if (c.content_ != "[") {
-			throw std::string("expected to get a symbol [ in string " + std::to_string(c.num_of_string_));
+			throw std::string("expected to get a symbol [ in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 		Exp();
 		if (c.content_ != "]") {
-			throw std::string("expected to get a symbol ] in string " + std::to_string(c.num_of_string_));
+			throw std::string("expected to get a symbol ] in line " + std::to_string(c.num_of_string_));
 		}
 		return true;
 	}
@@ -157,13 +157,13 @@ bool NumType() {
 }
 void Type() {
 	if (!(NumType() || ArrayType() || CharType())) {
-		throw std::string("invalid data type in string " + std::to_string(c.num_of_string_));
+		throw std::string("invalid data type in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 }
 void FunctionType() {
     if (!(NumType() || ArrayType() || CharType() || c.content_ == "void")) {
-        throw std::string("invalid data type in string " + std::to_string(c.num_of_string_));
+        throw std::string("invalid data type in line " + std::to_string(c.num_of_string_));
     }
     gl();
 }
@@ -179,7 +179,7 @@ void Parameters() {
 		gl();
 		Type();
 		if (c.type_ != "identifier") {
-			throw std::string("variable declaration was expected in string " + std::to_string(c.num_of_string_));
+			throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 	}
@@ -213,7 +213,7 @@ void Exp1() {
 			gl();
 			Enumeration();
 			if (c.content_ != ")") {
-				throw std::string("expected to get a symbol ) in string " + std::to_string(c.num_of_string_));
+				throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
 			}
 			gl();
 		}
@@ -225,13 +225,13 @@ void Exp1() {
 		}
 	}
 	else if (c.content_ != "(") {
-        throw std::string("expected to get a expression in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a expression in line " + std::to_string(c.num_of_string_));
 	}
 	else {
 		gl();
 		Exp8();
 		if (c.content_ != ")") {
-            throw std::string("expected to get a symbol ) in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 	}
@@ -289,14 +289,14 @@ void Exp() {
 }
 void Lvalue() {
 	if (c.type_ != "identifier") {
-		throw std::string("variable declaration was expected in string " + std::to_string(c.num_of_string_));
+		throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	if (c.content_ == "[") {
 		gl();
 		Exp();
 		if (c.content_ != "]") {
-            throw std::string("expected to get a symbol ] in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ] in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 	}
@@ -304,7 +304,7 @@ void Lvalue() {
 void Exp9() {
 	Lvalue();
 	if (!Prior9()) {
-        throw std::string("expected assignment in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected assignment in line " + std::to_string(c.num_of_string_));
 	}
 	if (c.content_ == "=") {
 		gl();
@@ -322,25 +322,25 @@ void Exp9() {
 }
 void While() {
 	if (c.content_ != "(") {
-        throw std::string("expected to get a symbol ( in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol ( in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	Exp();
 	if (c.content_ != ")") {
-        throw std::string("expected to get a symbol ] ) in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol ] ) in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	Block();
 }
 void For() {
 	if (c.content_ != "(") {
-        throw std::string("expected to get a symbol ( in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol ( in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	if (Type_()) {
 		gl();
 		if (c.type_ != "identifier") {
-            throw std::string("variable declaration was expected in string " + std::to_string(c.num_of_string_));
+            throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 		if (c.content_ == "=") {
@@ -355,7 +355,7 @@ void For() {
 		while (c.content_ == ",") {
 			gl();
 			if (c.type_ != "identifier") {
-                throw std::string("variable declaration was expected in string " + std::to_string(c.num_of_string_));
+                throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
 			}
 			gl();
 			if (c.content_ == "=") {
@@ -369,12 +369,12 @@ void For() {
 			}
 		}
 		if (c.content_ != ";") {
-            throw std::string("expected to get a symbol ; in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ; in line " + std::to_string(c.num_of_string_));
 		}
 	}
 	else if (c.type_ == "identifier") {
 		if (c.type_ != "identifier") {
-            throw std::string("variable declaration was expected in string " + std::to_string(c.num_of_string_));
+            throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 		if (c.content_ == "=") {
@@ -389,7 +389,7 @@ void For() {
 		while (c.content_ == ",") {
 			gl();
 			if (c.type_ != "identifier") {
-                throw std::string("variable declaration was expected in string " + std::to_string(c.num_of_string_));
+                throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
 			}
 			gl();
 			if (c.content_ == "=") {
@@ -403,35 +403,35 @@ void For() {
 			}
 		}
 		if (c.content_ != ";") {
-            throw std::string("expected to get a symbol ; in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ; in line " + std::to_string(c.num_of_string_));
 		}
 	}
 	if (c.content_ == ";") {
 		gl();
 	}
 	else {
-        throw std::string("incorrect cycle definition in string " + std::to_string(c.num_of_string_));
+        throw std::string("incorrect cycle definition in line " + std::to_string(c.num_of_string_));
 	}
 	Exp();
 	if (c.content_ != ";") {
-        throw std::string(" expected to get a symbol ; in string " + std::to_string(c.num_of_string_));
+        throw std::string(" expected to get a symbol ; in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	Exp();
 	if (c.content_ != ")") {
-        throw std::string("expected to get a symbol ) in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	Block();
 }
 void If() {
 	if (c.content_ != "(") {
-        throw std::string("expected to get a symbol ( in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol ( in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	Exp();
 	if (c.content_ != ")") {
-        throw std::string("expected to get a symbol ) in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	Block();
@@ -450,7 +450,7 @@ void Return() {
 }
 void Cout() {
 	if (c.content_ != "<<") {
-        throw std::string("expected to get a symbols << in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbols << in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	if (c.type_ == "string literal") {
@@ -471,17 +471,17 @@ void Cout() {
 }
 void Cin() {
 	if (c.content_ != ">>") {
-        throw std::string("expected to get a symbols >> in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbols >> in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	if (c.type_ != "identifier") {
-        throw std::string("variable declaration was expected in string " + std::to_string(c.num_of_string_));
+        throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	while (c.content_ == ">>") {
 		gl();
 		if (c.type_ != "identifier") {
-            throw std::string("variable declaration was expected in string " + std::to_string(c.num_of_string_));
+            throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 	}
@@ -491,7 +491,7 @@ void Declaration() {
     Array();
 	gl();
 	if (c.type_ != "identifier") {
-        throw std::string("variable decloration was expected in string " + std::to_string(c.num_of_string_));
+        throw std::string("variable decloration was expected in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	if (c.content_ == "=") {
@@ -508,7 +508,7 @@ void Declaration() {
 		fl_gl = true;
 		gl();
 		if (c.type_ != "identifier") {
-            throw std::string("variable decloration was expected in string " + std::to_string(c.num_of_string_));
+            throw std::string("variable decloration was expected in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 		if (c.content_ == "=") {
@@ -523,9 +523,9 @@ void Declaration() {
 	}
 	if (c.content_ != ";") {
 		if (fl_gl == true) {
-            throw std::string("expected to get a symbol ; in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ; in line " + std::to_string(c.num_of_string_));
 		}
-        throw std::string("expected to get a expression in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a expression in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 }
@@ -534,7 +534,7 @@ void Operator() {
 		gl();
 		Cin();
 		if (c.content_ != ";") {
-            throw std::string("expected to get a symbol ; in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ; in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 	}
@@ -542,7 +542,7 @@ void Operator() {
 		gl();
 		Cout();
 		if (c.content_ != ";") {
-            throw std::string("expected to get a symbol ; in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ; in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 	}
@@ -562,27 +562,27 @@ void Operator() {
 		gl();
 		Return();
 		if (c.content_ != ";") {
-            throw std::string("expected to get a symbol ; in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ; in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 	}
 	else {
 		Exp();
 		if (c.content_ != ";") {
-            throw std::string("expected to get a symbol ; in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol ; in line " + std::to_string(c.num_of_string_));
 		}
 		gl();
 	}
 }
 void Block() {
 	if (c.content_ != "{") {
-        throw std::string("expected to get a symbol { in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol { in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
     
 	while (c.content_ != "}") {
         if (c.type_ == "end") {
-            throw std::string("expected to get a symbol } in string " + std::to_string(c.num_of_string_));
+            throw std::string("expected to get a symbol } in line " + std::to_string(c.num_of_string_));
         }
 		if (Type_()) {
 			Declaration();
@@ -599,7 +599,7 @@ void Block() {
 				}
 				gl();
 				if (c.content_ != ";") {
-                    throw std::string("expected to get a symbols ; in string " + std::to_string(c.num_of_string_));
+                    throw std::string("expected to get a symbols ; in line " + std::to_string(c.num_of_string_));
 				}
 				gl();
 			}
@@ -608,7 +608,7 @@ void Block() {
 				gl();
 				Exp9();
 				if (c.content_ != ";") {
-                    throw std::string("expected to get a symbols ; in string " + std::to_string(c.num_of_string_));
+                    throw std::string("expected to get a symbols ; in line " + std::to_string(c.num_of_string_));
 				}
 				gl();
 			}
@@ -618,13 +618,13 @@ void Block() {
 		}
 	}
 	if (c.content_ != "}") {
-        throw std::string("expected to get a symbols } in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbols } in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 }
 void Function() {
     if (i >= lexemes.size() - 1) {
-        throw std::string("the main declaration is missing in string " + std::to_string(c.num_of_string_));
+        throw std::string("the main declaration is missing in line " + std::to_string(c.num_of_string_));
     }
 	FunctionType();
 	bool fl_main = 0;
@@ -633,17 +633,17 @@ void Function() {
 	}
 	else {
 		if (c.type_ != "identifier") {
-            throw std::string("missing function name in string " + std::to_string(c.num_of_string_));
+            throw std::string("missing function name in line " + std::to_string(c.num_of_string_));
 		}
 	}
 	gl();
 	if (c.content_ != "(") {
-        throw std::string("expected to get a symbol ( in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol ( in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	Parameters();
 	if (c.content_ != ")") {
-        throw std::string("expected to get a symbol ) in string " + std::to_string(c.num_of_string_));
+        throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
 	}
 	gl();
 	Block();
