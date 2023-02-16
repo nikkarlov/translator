@@ -1,10 +1,44 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <stack>
 #include "Lexeme.h";
 Lexeme c;
 int i = 0;
 std::vector<Lexeme> lexemes;
+
+std::stack<std::string> types_and_operations;
+
+//void Push(std::string str) {
+//    types_and_operations.push(str);
+//}
+//std::string makeOperation() {
+//
+//}
+//void CheckBin() {
+//    std::string first_operator = types_and_operations.top();
+//    types_and_operations.pop();
+//
+//    std::string operation = types_and_operations.top();
+//    types_and_operations.pop();
+//
+//    std::string second_operator = types_and_operations.top();
+//    types_and_operations.pop();
+//
+//    types_and_operations.push(makeOperation());
+//}
+//void CheckUno() {
+//    std::string first_operator = types_and_operations.top();
+//    types_and_operations.pop();
+//
+//    std::string operation = types_and_operations.top();
+//    types_and_operations.pop();
+//
+//    std::string second_operator = types_and_operations.top();
+//    types_and_operations.pop();
+//
+//    types_and_operations.push(makeOperation());
+//}
 
 void gl();
 void Exp();

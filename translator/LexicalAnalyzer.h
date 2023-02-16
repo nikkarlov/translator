@@ -42,8 +42,7 @@ bool DoubleOperation(const std::string& a) {
 	}
 	return false;
 }
-std::vector<Lexeme> Analiz(bool& fl) {
-	fl = 1;
+std::vector<Lexeme> Analiz() {
 	std::ifstream fin("officialWords.txt");
 	std::string line;
 	std::set<std::string> ofWords;
@@ -94,11 +93,6 @@ std::vector<Lexeme> Analiz(bool& fl) {
 				str += program[i];
 				i++;
 			}
-			if (i < program.size()) {
-				if (Letter(program[i])) {
-					fl = 0;
-				}
-			}
 			if (flDot) {
 				vec.push_back({ str, "numeric ld literal", j});
 			}
@@ -147,7 +141,6 @@ std::vector<Lexeme> Analiz(bool& fl) {
             if (program[i] == '\n') j++;
 			continue;
 		}
-        fl = 0;
 		vec.push_back({ std::string(1, program[i]), "incorrect symbol", j});
 	}
 	return vec;
