@@ -2,43 +2,13 @@
 #include <iostream>
 #include <vector>
 #include <stack>
-#include "Lexeme.h";
+#include "Lexeme.h"
+#include "Semantic.h"
+
 Lexeme c;
 int i = 0;
+Itv itv;
 std::vector<Lexeme> lexemes;
-
-std::stack<std::string> types_and_operations;
-
-//void Push(std::string str) {
-//    types_and_operations.push(str);
-//}
-//std::string makeOperation() {
-//
-//}
-//void CheckBin() {
-//    std::string first_operator = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    std::string operation = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    std::string second_operator = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    types_and_operations.push(makeOperation());
-//}
-//void CheckUno() {
-//    std::string first_operator = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    std::string operation = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    std::string second_operator = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    types_and_operations.push(makeOperation());
-//}
 
 void gl();
 void Exp();
@@ -149,6 +119,7 @@ bool String() {
 }
 bool Array() {
 	if (c.content_ == "array") {
+        itv.type_ += c.content_;
 		gl();
 		if (c.content_ != "<") {
 			throw std::string("expected to get a symbol < in line " + std::to_string(c.num_of_string_));
@@ -167,6 +138,7 @@ bool Array() {
 		if (c.content_ != "]") {
 			throw std::string("expected to get a symbol ] in line " + std::to_string(c.num_of_string_));
 		}
+        gl();
 		return true;
 	}
 	return false;
@@ -193,6 +165,7 @@ void Type() {
 	if (!(NumType() || ArrayType() || CharType())) {
 		throw std::string("invalid data type in line " + std::to_string(c.num_of_string_));
 	}
+    itv.type_ += c.content_;
 	gl();
 }
 void FunctionType() {
@@ -521,12 +494,20 @@ void Cin() {
 	}
 }
 void Declaration() {
+    itv.type_ = "";
 	bool fl_gl = false;
-    Array();
-	gl();
+    if (!Array()) {
+        itv.type_ = c.content_;
+        gl();
+    }
 	if (c.type_ != "identifier") {
         throw std::string("variable decloration was expected in line " + std::to_string(c.num_of_string_));
 	}
+    itv.identifier_ = c.content_;
+    if (current_scope->CheckId(itv.identifier_)) {
+        throw std::string("variable is already declared " + std::to_string(c.num_of_string_));
+    }
+    current_scope->PushId(itv);
 	gl();
 	if (c.content_ == "=") {
 		fl_gl = true;
@@ -544,6 +525,7 @@ void Declaration() {
 		if (c.type_ != "identifier") {
             throw std::string("variable decloration was expected in line " + std::to_string(c.num_of_string_));
 		}
+        itv.identifier_ = c.content_;
 		gl();
 		if (c.content_ == "=") {
 			gl();
@@ -554,6 +536,10 @@ void Declaration() {
 				Exp();
 			}
 		}
+        if (current_scope->CheckId(itv.identifier_)) {
+            throw std::string("variable is already declared " + std::to_string(c.num_of_string_));
+        }
+        current_scope->PushId(itv);
 	}
 	if (c.content_ != ";") {
 		if (fl_gl == true) {
@@ -709,6 +695,7 @@ void Program() {
 }
 
 void SyntaxAnalyzer(std::vector<Lexeme> lexemes_) {
+    current_scope = new Vertex_of_tree({ {}, {}, nullptr });
 	swap(lexemes, lexemes_);
 	try {
 		Program();

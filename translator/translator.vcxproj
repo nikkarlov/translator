@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="Lexeme.h" />
     <ClInclude Include="LexicalAnalyzer.h" />
+    <ClInclude Include="Semantic.h" />
     <ClInclude Include="SyntaxAnalyzer.h" />
   </ItemGroup>
   <ItemGroup>
