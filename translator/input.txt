@@ -1,8 +1,9 @@
-
-
-
+int b(){
+}
+array<int>[0] wewq;
 int main()
 {
-int a;
-int a;
- }
+wewq[7] = 4;
+	int a;
+	array<int>[0] ewr;
+}

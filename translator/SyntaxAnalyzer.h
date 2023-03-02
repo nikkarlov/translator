@@ -113,6 +113,7 @@ void gl() {
 }
 bool String() {
 	if (c.content_ == "string") {
+		itv.type_ += c.content_;
 		return true;
 	}
 	return false;
@@ -145,6 +146,7 @@ bool Array() {
 }
 bool CharType() {
 	if (c.content_ == "char") {
+		itv.type_ += c.content_;
 		return true;
 	}
 	return false;
@@ -157,6 +159,7 @@ bool ArrayType() {
 }
 bool NumType() {
 	if (c.content_ == "int" || c.content_ == "ll" || c.content_ == "float" || c.content_ == "ld") {
+		itv.type_ += c.content_;
 		return true;
 	}
 	return false;
@@ -165,13 +168,13 @@ void Type() {
 	if (!(NumType() || ArrayType() || CharType())) {
 		throw std::string("invalid data type in line " + std::to_string(c.num_of_string_));
 	}
-    itv.type_ += c.content_;
 	gl();
 }
 void FunctionType() {
-    if (!(NumType() || ArrayType() || CharType() || c.content_ == "void")) {
+    if (!(NumType() || CharType() || c.content_ == "void")) {
         throw std::string("invalid data type in line " + std::to_string(c.num_of_string_));
     }
+	itv.type_ += c.content_;
     gl();
 }
 void Parameters() {
