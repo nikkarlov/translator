@@ -54,8 +54,10 @@ public:
     std::vector<Vertex_of_tree*> childs_;
     Vertex_of_tree* parent_;
 
-    void PushId(Itv itv) {
+    void PushId(Itv& itv) {
         table_of_tids_.push_back(itv);
+        itv = {};
+
     }
     bool CheckId(std::string identifier) {
         for (auto i: table_of_tids_)

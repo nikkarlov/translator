@@ -1,9 +1,33 @@
-int b(){
+void mass(array<int>[] a)
+{
+    int b;
 }
-array<int>[0] wewq;
+
+void ma2s(array<int>[] a)
+{
+
+    int b;
+}
+
+int a;
 int main()
 {
-wewq[7] = 4;
-	int a;
-	array<int>[0] ewr;
+	//int a;
+	int mas;
+	while (mas != 0){
+	b = 2;
+	}
+	int b;
+
+	for (int c = b, f =4; i < 4; ++i){
+	int ef;
+	}
+	int c, f;
+
+	if (c != 5){
+	int k;
+	}
+	else{
+	int k;}
+	int k;
 }
