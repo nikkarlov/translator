@@ -13,21 +13,10 @@ int a;
 int main()
 {
 	//int a;
-	int mas;
-	while (mas != 0){
-	b = 2;
-	}
-	int b;
+	string mas = "ee";
+	int b = "ee";
 
-	for (int c = b, f =4; i < 4; ++i){
-	int ef;
-	}
 	int c, f;
 
-	if (c != 5){
-	int k;
-	}
-	else{
-	int k;}
 	int k;
 }

@@ -10,6 +10,8 @@ int i = 0;
 Itv itv;
 Itv itv_params;
 std::vector<Lexeme> lexemes;
+std::stack<std::string> stack_of_types;
+Control_types control_types;
 
 void gl();
 void Exp();
@@ -26,73 +28,65 @@ bool Type_() {
     return false;
 }
 bool Prior1() {
-    if (c.content_ == "++" || c.content_ == "--") {
-        return true;
-    }
     if (c.content_ == "[") {
         gl();
         Exp();
         if (c.content_ != "]") {
             throw std::string("expected to get a symbol ] in line " + std::to_string(c.num_of_string_));
         }
-        return true;
-    }
-    if (c.content_ == "(") {
-        gl();
-        Exp();
-        if (c.content_ != ")") {
-            throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
+        std::string t_name = control_types.PopTypes();
+        if (t_name != "ll" && t_name != "int") {
+            throw std::string("RRRR not ll not int in line " + std::to_string(c.num_of_string_));
         }
         return true;
     }
     return false;
 }
-bool Prior2() {
-    if (c.content_ == "++" || c.content_ == "--" || c.content_ == "+" || c.content_ == "-" ||
-        c.content_ == "~" || c.content_ == "!") {
+bool Prior2(std::string str = c.content_) {
+    if (str == "+" || str == "-" || str == "!") {
         return true;
     }
     return false;
 }
-bool Prior3() {
-    if (c.content_ == "*" || c.content_ == "/" || c.content_ == "%") {
+bool Prior3(std::string str = c.content_) {
+    if (str == "*" || str == "/" || str == "%") {
         return true;
     }
     return false;
 }
-bool Prior4() {
-    if (c.content_ == "+" || c.content_ == "-") {
+bool Prior4(std::string str = c.content_) {
+    if (str == "+" || str == "-") {
         return true;
     }
     return false;
 }
-bool Prior5() {
-    if (c.content_ == ">" || c.content_ == "<" || c.content_ == ">=" || c.content_ == "<=") {
+bool Prior5(std::string str = c.content_) {
+    if (str == ">" || str == "<" || str == ">=" || str == "<=") {
         return true;
     }
     return false;
 }
-bool Prior6() {
-    if (c.content_ == "==" || c.content_ == "!=") {
+bool Prior6(std::string str = c.content_) {
+    if (str == "==" || str == "!=") {
         return true;
     }
     return false;
 }
-bool Prior7() {
-    if (c.content_ == "&&") {
+bool Prior7(std::string str = c.content_) {
+    if (str == "&&") {
         return true;
     }
     return false;
 }
-bool Prior8() {
-    if (c.content_ == "||") {
+bool Prior8(std::string str = c.content_) {
+    if (str == "||") {
         return true;
     }
     return false;
 }
-bool Prior9() {
-    if (c.content_ == "=" || c.content_ == "+=" || c.content_ == "-=" || c.content_ == "*=" ||
-        c.content_ == "/=" || c.content_ == "%=") {
+bool Prior9(std::string str = c.content_) {
+    if (str == "=" || str == "+=" || str == "-=" || str == "*=" ||
+        str == "/=" || str == "%=") {
         return true;
     }
     return false;
@@ -209,6 +203,7 @@ void Parameters() {
 void Enumeration() {
     if (c.content_ != ")") {
         if (c.type_ == "string literal") {
+            control_types.PushTypes("string");
             gl();
         }
         else {
@@ -218,6 +213,7 @@ void Enumeration() {
     while (c.content_ == ",") {
         gl();
         if (c.type_ == "string literal") {
+            control_types.PushTypes("string");
             gl();
         }
         else {
@@ -226,18 +222,39 @@ void Enumeration() {
     }
 }
 void Exp1() {
-    if (c.type_ == "numeric ll literal" || c.type_ == "numeric ld literal") {
+    if (c.type_ == "numeric ll literal") {
+        control_types.PushTypes("ll");
+        gl();
+    }
+    else if (c.type_ == "numeric ld literal") {
+        control_types.PushTypes("ld");
         gl();
     }
     else if (c.type_ == "identifier") {
+        control_types.PushTypes(current_scope->GetType(c.content_));
+        std::vector<std::string> vect_param = current_scope->GetParams(c.content_);
         gl();
         if (c.content_ == "(") {
+            control_types.PushOperations("(");
             gl();
             Enumeration();
             if (c.content_ != ")") {
                 throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
             }
             gl();
+
+            std::string tmp = control_types.PopTypes();
+            int i = 0;
+            while (tmp != "(") {
+                if (i >= vect_param.size() || vect_param[i] != tmp) {
+                    throw std::string("RRRRRRRR incorrect params " + std::to_string(c.num_of_string_));
+                }
+                tmp = control_types.PopTypes();
+                i++;
+            }
+            if (i != vect_param.size()) {
+                throw std::string("RRRRRRRR incorrect params " + std::to_string(c.num_of_string_));
+            }
         }
         else if (Prior1()) {
             gl();
@@ -250,60 +267,135 @@ void Exp1() {
         throw std::string("expected to get a expression in line " + std::to_string(c.num_of_string_));
     }
     else {
+        control_types.PushOperations("(");
         gl();
         Exp8();
         if (c.content_ != ")") {
             throw std::string("expected to get a symbol ) in line " + std::to_string(c.num_of_string_));
         }
+        std::string tmp = control_types.PopOperations();
+        while (tmp != "(") {
+            if (!control_types.isUno(tmp)) {
+                throw std::string("RRR NDJDJ in line " + std::to_string(c.num_of_string_));
+            }
+            tmp = control_types.PopOperations();
+        }
         gl();
     }
 }
 void Exp2() {
+    bool flag = false;
     if (Prior2()) {
+        flag = true;
+        control_types.PushOperations(c.content_);
         gl();
     }
     Exp1();
+    if (flag) {
+        std::string tmp = control_types.PopOperations();
+        while (Prior2(tmp)) {
+            if (!control_types.isUno(tmp)) {
+                throw std::string("ERROR IN TYPE UNO" + std::to_string(c.num_of_string_));
+            }
+            tmp = control_types.PopOperations();
+        }
+        control_types.PushOperations(tmp);
+    }
 }
 void Exp3() {
     Exp2();
     while (Prior3()) {
+        control_types.PushOperations(c.content_);
         gl();
         Exp2();
+        std::string tmp = control_types.PopOperations();
+        while (Prior3(tmp)) {
+            if (!control_types.isUno(tmp)) {
+                throw std::string("ERROR IN TYPE UNO" + std::to_string(c.num_of_string_));
+            }
+            tmp = control_types.PopOperations();
+        }
+        control_types.PushOperations(tmp);
     }
 }
 void Exp4() {
     Exp3();
     while (Prior4()) {
+        control_types.PushOperations(c.content_);
         gl();
         Exp3();
+        std::string tmp = control_types.PopOperations();
+        while (Prior4(tmp)) {
+            if (!control_types.isUno(tmp)) {
+                throw std::string("ERROR IN TYPE UNO" + std::to_string(c.num_of_string_));
+            }
+            tmp = control_types.PopOperations();
+        }
+        control_types.PushOperations(tmp);
     }
 }
 void Exp5() {
     Exp4();
     while (Prior5()) {
+        control_types.PushOperations(c.content_);
         gl();
         Exp4();
+        std::string tmp = control_types.PopOperations();
+        while (Prior5(tmp)) {
+            if (!control_types.isUno(tmp)) {
+                throw std::string("ERROR IN TYPE UNO" + std::to_string(c.num_of_string_));
+            }
+            tmp = control_types.PopOperations();
+        }
+        control_types.PushOperations(tmp);
     }
 }
 void Exp6() {
     Exp5();
     while (Prior6()) {
+        control_types.PushOperations(c.content_);
         gl();
         Exp5();
+        std::string tmp = control_types.PopOperations();
+        while (Prior6(tmp)) {
+            if (!control_types.isUno(tmp)) {
+                throw std::string("ERROR IN TYPE UNO" + std::to_string(c.num_of_string_));
+            }
+            tmp = control_types.PopOperations();
+        }
+        control_types.PushOperations(tmp);
     }
 }
 void Exp7() {
     Exp6();
     while (Prior7()) {
+        control_types.PushOperations(c.content_);
         gl();
         Exp6();
+        std::string tmp = control_types.PopOperations();
+        while (Prior7(tmp)) {
+            if (!control_types.isUno(tmp)) {
+                throw std::string("ERROR IN TYPE UNO" + std::to_string(c.num_of_string_));
+            }
+            tmp = control_types.PopOperations();
+        }
+        control_types.PushOperations(tmp);
     }
 }
 void Exp8() {
     Exp7();
     while (Prior8()) {
+        control_types.PushOperations(c.content_);
         gl();
         Exp7();
+        std::string tmp = control_types.PopOperations();
+        while (Prior8(tmp)) {
+            if (!control_types.isUno(tmp)) {
+                throw std::string("ERROR IN TYPE UNO" + std::to_string(c.num_of_string_));
+            }
+            tmp = control_types.PopOperations();
+        }
+        control_types.PushOperations(tmp);
     }
 }
 void Exp() {
@@ -313,6 +405,7 @@ void Lvalue() {
     if (c.type_ != "identifier") {
         throw std::string("variable declaration was expected in line " + std::to_string(c.num_of_string_));
     }
+    control_types.PushTypes(current_scope->GetType(c.content_));
     gl();
     if (c.content_ == "[") {
         gl();
@@ -328,9 +421,11 @@ void Exp9() {
     if (!Prior9()) {
         throw std::string("expected assignment in line " + std::to_string(c.num_of_string_));
     }
+    control_types.PushOperations(c.content_);
     if (c.content_ == "=") {
         gl();
         if (c.type_ == "string literal") {
+            control_types.PushTypes("string");
             gl();
         }
         else {
@@ -340,6 +435,9 @@ void Exp9() {
     else {
         gl();
         Exp8();
+    }
+    if (!control_types.isUno(control_types.PopOperations())) {
+        throw std::string("RRRRR ww in line " + std::to_string(c.num_of_string_));
     }
 }
 void While() {
