@@ -7,3 +7,11 @@ cin
 if
 else
 void
+bool
+char
+string
+int
+longlong
+float
+double
+mass

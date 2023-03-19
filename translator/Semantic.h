@@ -2,59 +2,23 @@
 #include <string>
 #include <vector>
 
+class Vertex;
 
-
-
-//void Push(std::string str) {
-//    types_and_operations.push(str);
-//}
-//std::string makeOperation() {
-//
-//}
-//void CheckBin() {
-//    std::string first_operator = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    std::string operation = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    std::string second_operator = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    types_and_operations.push(makeOperation());
-//}
-//void CheckUno() {
-//    std::string first_operator = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    std::string operation = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    std::string second_operator = types_and_operations.top();
-//    types_and_operations.pop();
-//
-//    types_and_operations.push(makeOperation());
-//}
-
-class Vertex_of_tree;
-
-struct Itv
+struct Identifier_type_value
 {
-    std::string identifier_, type_;
-    std::vector<Itv> params_;
+    std::string identifier_, type_, value_;
 };
 
+Vertex* current_scope;
 
-Vertex_of_tree* current_scope;
-
-class Vertex_of_tree
+class Vertex
 {
 public:
-    std::vector<Itv> table_of_tids_;
-    std::vector<Vertex_of_tree*> childs_;
-    Vertex_of_tree* parent_;
+    std::vector<Identifier_type_value> table_of_tids_;
+    std::vector<Vertex*> childs_;
+    Vertex* parent_;
 
-    void PushId(Itv& itv) {
+    void PushId(Identifier_type_value& itv) {
         table_of_tids_.push_back(itv);
         itv = {};
 
@@ -74,9 +38,9 @@ public:
             if (i.identifier_ == identifier) return i.type_;
         }
         if (parent_ != nullptr) return parent_->GetType(identifier);
-        return "error";
+        return "identifier not found";
     }
-    std::vector<std::string> GetParams(std::string identifier) {
+    /*std::vector<std::string> GetParams(std::string identifier) {
         for (auto i : table_of_tids_)
         {
             if (i.identifier_ == identifier) {
@@ -90,9 +54,9 @@ public:
         }
         if (parent_ != nullptr) return parent_->GetParams(identifier);
         return {"error"};
-    }
+    }*/
     void NewScope() {
-        Vertex_of_tree* vot = new Vertex_of_tree({ {},{},this });
+        Vertex* vot = new Vertex({{}, {}, this});
         childs_.push_back(vot);
         current_scope = vot;
     }
@@ -167,6 +131,7 @@ public:
                 {
                     stack_of_types.push("bool");
                     return true;
+
                 }
             }
             else
@@ -272,4 +237,24 @@ public:
         }
         return CheckBin(str);
     }
+};
+
+class Control_types_in_operations
+{
+public:
+    void Push(std::string string) {
+        stack_of_types_and_expressions.push(string);
+    }
+    void CheckBinary() {
+        std::string type_of_1op = stack_of_types_and_expressions.top();
+        stack_of_types_and_expressions.pop();
+        std::string operation = stack_of_types_and_expressions.top();
+        stack_of_types_and_expressions.pop();
+        std::string type_of_2op = stack_of_types_and_expressions.top();
+        stack_of_types_and_expressions.pop();
+
+
+    }
+private:
+    std::stack<std::string> stack_of_types_and_expressions;
 };

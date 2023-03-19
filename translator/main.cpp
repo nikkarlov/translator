@@ -1,7 +1,6 @@
 #include "LexicalAnalyzer.h"
 #include "SyntaxAnalyzer.h"
 int main() {
-	std::vector<Lexeme> lex = Analiz();
-	SyntaxAnalyzer(lex);
+	SyntaxAnalyzer(Analiz());
 	return 0;
 }

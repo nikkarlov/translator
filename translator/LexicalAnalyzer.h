@@ -75,7 +75,7 @@ std::vector<Lexeme> Analiz() {
                 i++;
             }
             if (ofWords.find(str) != ofWords.end()) {
-                vec.push_back({str, "offcial word", j});
+                vec.push_back({str, "offword", j});
             }
             else {
                 vec.push_back({ str, "identifier", j});
@@ -94,10 +94,10 @@ std::vector<Lexeme> Analiz() {
                 i++;
             }
             if (flDot) {
-                vec.push_back({ str, "numeric ld literal", j});
+                vec.push_back({ str, "float num", j});
             }
             else {
-                vec.push_back({ str, "numeric ll literal", j});
+                vec.push_back({ str, "integer num", j});
             }
             i--;
             continue;
