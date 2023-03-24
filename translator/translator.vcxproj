@@ -142,16 +142,14 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Lexeme.h" />
-    <ClInclude Include="LexicalAnalyzer.h" />
-    <ClInclude Include="Semantic.h" />
-    <ClInclude Include="Syntaxalyzer.h" />
-    <ClInclude Include="SyntaxAnalyzer.h" />
+    <ClInclude Include="lexeme.h" />
+    <ClInclude Include="lexical-analyzer.h" />
+    <ClInclude Include="semantic-analyzer.h" />
+    <ClInclude Include="syntax-analyzer.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="input.txt" />
-    <Text Include="officialWords.txt" />
-    <Text Include="output.txt" />
+    <Text Include="input-file.txt" />
+    <Text Include="official-words.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

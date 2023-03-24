@@ -20,30 +20,24 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Lexeme.h">
+    <ClInclude Include="lexeme.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="LexicalAnalyzer.h">
+    <ClInclude Include="lexical-analyzer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Syntaxalyzer.h">
+    <ClInclude Include="semantic-analyzer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="Semantic.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="SyntaxAnalyzer.h">
+    <ClInclude Include="syntax-analyzer.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="input.txt">
+    <Text Include="input-file.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
-    <Text Include="officialWords.txt">
-      <Filter>Исходные файлы</Filter>
-    </Text>
-    <Text Include="output.txt">
+    <Text Include="official-words.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
   </ItemGroup>
