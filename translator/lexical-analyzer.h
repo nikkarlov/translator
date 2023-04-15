@@ -31,7 +31,7 @@ public:
                 i--;
                 continue;
             }
-            if (IsLetter(program_text[i])) {
+            if (IsLetter(program_text[i]) || program_text[i] == '_') {
                 std::string str;
                 while (i < program_text.size() && IsNumAndLetAndUnderscore(program_text[i])) {
                     str += program_text[i];

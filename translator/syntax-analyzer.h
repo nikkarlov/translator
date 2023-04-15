@@ -10,8 +10,6 @@ int index = -1;
 Scope* current_scope = new Scope();
 ControlTypesInExpressions control_types_in_expressions;
 
-void Expression(std::string declared_type = "", std::string ttype = "");
-
 void gl(int i = -1) {
     index++;
     if (index == lexemes.size()) return;
@@ -26,111 +24,71 @@ void gl(int i = -1) {
     }
 }
 
-void Identifier(bool bracket = true, bool mass = 1, bool b = 0) {
+std::string Expression12();
+
+void Identifier() {
     if (current_lexeme.type_ == "identifier") {
-        gl();
-        if (b || mass && bracket && current_lexeme.content_ == "[") {
+        if (current_scope->IsIdentifier(current_lexeme.content_) && current_scope->GetType(current_lexeme.content_).substr(0, 4) == "list") {
+            gl();
             if (current_lexeme.content_ != "[") throw std::string("[ was expected in line " + std::to_string(current_lexeme.num_of_string_));
             gl();
-            if (current_lexeme.type_ != "int numeric literal" && current_lexeme.type_ != "identifier" ||
-                current_lexeme.type_ == "identifier" && current_scope->GetType(current_lexeme.content_) != "int") throw std::string("integer or identifier was expected in index line " + std::to_string(current_lexeme.num_of_string_));
-            gl();
+            if (Expression12() != "int") throw std::string("the expression must be of the integer type in line " + std::to_string(current_lexeme.num_of_string_));
             if (current_lexeme.content_ != "]") throw std::string("] was expected in line " + std::to_string(current_lexeme.num_of_string_));
             gl();
+            return;
         }
+        gl();
         return;
     }
     throw std::string("identifier was expected in line " + std::to_string(current_lexeme.num_of_string_));
 }
 
-void Expression9(std::string ttype = "");
-void Expression11(std::string ttype = "");
-void Lvalue(std::string declared_type);
-
-void Expression(std::string declared_type, std::string ttype) {
-    int cur_ind = index;
+void Expression0() {
     if (current_lexeme.type_ == "identifier") {
-        if (declared_type.substr(0, 4) == "mass") {
-            Identifier(1, 1, 1);
-        }
-        else
-        {
-            Identifier();
-        }
-    }
-    else
-    {
-        gl();
-    }
-    if (current_lexeme.content_ == "+=" || current_lexeme.content_ == "-=" || current_lexeme.content_ == "=" ||
-        current_lexeme.content_ == "*=" || current_lexeme.content_ == "/=" || current_lexeme.content_ == "%=" ||
-        current_lexeme.content_ == "&=" || current_lexeme.content_ == "|=" || current_lexeme.content_ == "^=" ||
-        current_lexeme.content_ == "<<=" || current_lexeme.content_ == ">>=" || current_lexeme.content_ == "~=") {
-        gl(cur_ind);
-        Lvalue(declared_type);
-    }
-    else
-    {
-        gl(cur_ind);
-        Expression11(ttype);
-    }
-    
-    if (current_lexeme.content_ == "+=" || current_lexeme.content_ == "-=" || current_lexeme.content_ == "=" ||
-        current_lexeme.content_ == "*=" || current_lexeme.content_ == "/=" || current_lexeme.content_ == "%=" ||
-        current_lexeme.content_ == "&=" || current_lexeme.content_ == "|=" || current_lexeme.content_ == "^=" ||
-        current_lexeme.content_ == "<<=" || current_lexeme.content_ == ">>=" || current_lexeme.content_ == "~=") {
-        control_types_in_expressions.Push(current_lexeme.content_);
-        gl();
-        Expression11();
-        control_types_in_expressions.CheckBinary();
-    }
-}
-
-void Expression0(std::string ttype = "") {
-    if (current_lexeme.type_ == "identifier") {
-        std::string name = current_lexeme.content_;//id and ineeger literal
-        if (ttype != "") {
-            if (ttype == "mass") {
-                Identifier(1, 0);
-            }
-            else
-            {
-                Identifier();
-            }
-            control_types_in_expressions.Push(ttype);
-            return;
-        }
-        if (!current_scope->IsIdentifier(current_lexeme.content_)) throw std::string("variable " + current_lexeme.content_ + " is not declared in line " + std::to_string(current_lexeme.num_of_string_));
+        std::string name = current_lexeme.content_;
+        if (!current_scope->IsIdentifier(name)) throw std::string("variable " + name + " is not declared in line " + std::to_string(current_lexeme.num_of_string_));
+        control_types_in_expressions.Push(current_scope->GetType(name).substr(0, 4) == "list" ? current_scope->GetType(name).substr(4) : current_scope->GetType(name));
         Identifier();
-        control_types_in_expressions.Push(current_scope->GetType(name));
-    } else if (current_lexeme.type_ == "float numeric literal") {
+        return;
+    }
+    if (current_lexeme.type_ == "float numeric literal") {
         control_types_in_expressions.Push("float");
         gl();
-    } else if (current_lexeme.type_ == "int numeric literal") {
+        return;
+    }
+    if (current_lexeme.type_ == "int numeric literal") {
         control_types_in_expressions.Push("int");
         gl();
-    } else if (current_lexeme.type_ == "string literal") {
+        return;
+    }
+    if (current_lexeme.type_ == "string literal") {
         control_types_in_expressions.Push("string");
         gl();
-    } else if (current_lexeme.type_ == "char literal") {
+        return;
+    }
+    if (current_lexeme.type_ == "char literal") {
         control_types_in_expressions.Push("char");
         gl();
-    } else if (current_lexeme.content_ == "true" || current_lexeme.content_ == "false") {
+        return;
+    }
+    if (current_lexeme.content_ == "true" || current_lexeme.content_ == "false") {
         control_types_in_expressions.Push("bool");
         gl();
-    } else if (current_lexeme.content_ == "(") {
+        return;
+    }
+    if (current_lexeme.content_ == "(") {
         gl();
-        Expression();
+        control_types_in_expressions.Push(Expression12());
         if (current_lexeme.content_ != ")") {
             throw std::string(") was expected in line " + std::to_string(current_lexeme.num_of_string_));
         }
         gl();
-    } else {
-        throw std::string("operand expected in line " + std::to_string(current_lexeme.num_of_string_));
+        return;
     }
+    throw std::string("operand expected in line " + std::to_string(current_lexeme.num_of_string_));
 }
 
-void Expression1(std::string ttype = "") {
+void Expression1() {
     if (current_lexeme.content_ == "+" || current_lexeme.content_ == "-" || current_lexeme.content_ == "!" || current_lexeme.content_ == "~") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -139,12 +97,12 @@ void Expression1(std::string ttype = "") {
     }
     else
     {
-        Expression0(ttype);
+        Expression0();
     }
 }
 
-void Expression2(std::string ttype = "") {
-    Expression1(ttype);
+void Expression2() {
+    Expression1();
     while (current_lexeme.content_ == "*" || current_lexeme.content_ == "/" || current_lexeme.content_ == "%") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -153,8 +111,8 @@ void Expression2(std::string ttype = "") {
     }
 }
 
-void Expression3(std::string ttype = "") {
-    Expression2(ttype);
+void Expression3() {
+    Expression2();
     while (current_lexeme.content_ == "+" || current_lexeme.content_ == "-") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -163,8 +121,8 @@ void Expression3(std::string ttype = "") {
     }
 }
 
-void Expression4(std::string ttype = "") {
-    Expression3(ttype);
+void Expression4() {
+    Expression3();
     while (current_lexeme.content_ == ">>" || current_lexeme.content_ == "<<") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -173,8 +131,8 @@ void Expression4(std::string ttype = "") {
     }
 }
 
-void Expression5(std::string ttype = "") {
-    Expression4(ttype);
+void Expression5() {
+    Expression4();
     if (current_lexeme.content_ == ">" || current_lexeme.content_ == "<" || current_lexeme.content_ == ">=" || current_lexeme.content_ == "<=") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -183,8 +141,8 @@ void Expression5(std::string ttype = "") {
     }
 }
 
-void Expression6(std::string ttype = "") {
-    Expression5(ttype);
+void Expression6() {
+    Expression5();
     if (current_lexeme.content_ == "==" || current_lexeme.content_ == "!=") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -193,8 +151,8 @@ void Expression6(std::string ttype = "") {
     }
 }
 
-void Expression7(std::string ttype = "") {
-    Expression6(ttype);
+void Expression7() {
+    Expression6();
     while (current_lexeme.content_ == "&") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -203,8 +161,8 @@ void Expression7(std::string ttype = "") {
     }
 }
 
-void Expression8(std::string ttype = "") {
-    Expression7(ttype);
+void Expression8() {
+    Expression7();
     while (current_lexeme.content_ == "^") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -213,8 +171,8 @@ void Expression8(std::string ttype = "") {
     }
 }
 
-void Expression9(std::string ttype) {
-    Expression8(ttype);
+void Expression9() {
+    Expression8();
     while (current_lexeme.content_ == "|") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -223,8 +181,8 @@ void Expression9(std::string ttype) {
     }
 }
 
-void Expression10(std::string ttype = "") {
-    Expression9(ttype);
+void Expression10() {
+    Expression9();
     while (current_lexeme.content_ == "&&") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -233,8 +191,8 @@ void Expression10(std::string ttype = "") {
     }
 }
 
-void Expression11(std::string ttype) {
-    Expression10(ttype);
+void Expression11() {
+    Expression10();
     while (current_lexeme.content_ == "||") {
         control_types_in_expressions.Push(current_lexeme.content_);
         gl();
@@ -243,34 +201,65 @@ void Expression11(std::string ttype) {
     }
 }
 
-void Lvalue(std::string declared_type) {
-    if (current_lexeme.type_ != "identifier") throw std::string("the left operand of the operation = must be an identifier in line " + std::to_string(current_lexeme.num_of_string_));
-    if (declared_type == "") {
-        control_types_in_expressions.Push(current_scope->GetType(current_lexeme.content_));
-    }
-    else
+bool CheckAssignment() {
+    int current_index = index;
+    try
     {
-        control_types_in_expressions.Push(declared_type);
+        Identifier();
+        if (lexemes[index].content_ == "+=" || lexemes[index].content_ == "-=" || lexemes[index].content_ == "=" ||
+            lexemes[index].content_ == "*=" || lexemes[index].content_ == "/=" || lexemes[index].content_ == "%=" ||
+            lexemes[index].content_ == "&=" || lexemes[index].content_ == "|=" || lexemes[index].content_ == "^=" ||
+            lexemes[index].content_ == "<<=" || lexemes[index].content_ == ">>=" || lexemes[index].content_ == "~=") {
+            gl(current_index);
+            return true;
+        }
+        gl(current_index);
+        return false;
     }
+    catch (std::string str)
+    {
+        gl(current_index);
+        return false;
+    }
+}
+
+std::string Expression12() {
+    if (!CheckAssignment()) {
+        Expression11();
+        return control_types_in_expressions.GetTypeFromStack();
+    }
+    std::string name_identifier = current_lexeme.content_;
     Identifier();
+    if (!current_scope->IsIdentifier(name_identifier)) throw std::string("variable " + name_identifier + " is not declared in line " + std::to_string(current_lexeme.num_of_string_));
+    control_types_in_expressions.Push(current_scope->GetType(name_identifier));
+    if (lexemes[index].content_ == "+=" || lexemes[index].content_ == "-=" || lexemes[index].content_ == "=" ||
+        lexemes[index].content_ == "*=" || lexemes[index].content_ == "/=" || lexemes[index].content_ == "%=" ||
+        lexemes[index].content_ == "&=" || lexemes[index].content_ == "|=" || lexemes[index].content_ == "^=" ||
+        lexemes[index].content_ == "<<=" || lexemes[index].content_ == ">>=" || lexemes[index].content_ == "~=") {
+        control_types_in_expressions.Push(current_lexeme.content_);
+        gl();
+        Expression11();
+        control_types_in_expressions.CheckBinary();
+    }
+    return control_types_in_expressions.GetTypeFromStack();
 }
 
-bool CorrectType(std::string str, bool mass = true, bool string = true) {
+bool CorrectType(std::string str, bool list = true, bool string = true) {
     return str == "bool" || str == "char" || string && str == "string" || str == "int" ||
-        str == "longlong" || str == "float" || str == "double" || mass && str == "mass";
+        str == "longlong" || str == "float" || str == "double" || list && str == "list";
 }
 
-std::vector<std::string> Parametres() {
-    std::vector<std::string> types;
-    current_scope = current_scope->CreateNewScope();
-    if (current_lexeme.content_ == ")") return types;
-    if (!CorrectType(current_lexeme.content_, 0)) throw std::string("invalid type in the parameter in line " + std::to_string(current_lexeme.num_of_string_));
+std::vector<std::string> Parametres(std::string function_name) {
+    std::vector<std::string> types_of_params;
+    current_scope = current_scope->CreateNewScope(function_name);
+    if (current_lexeme.content_ == ")") return types_of_params;
+    if (!CorrectType(current_lexeme.content_)) throw std::string("invalid type in the parameter in line " + std::to_string(current_lexeme.num_of_string_));
     std::string type = current_lexeme.content_;
     gl();
     std::string name = current_lexeme.content_;
     Identifier();
     if (!current_scope->IsIdentifier(name)) {
-        types.push_back(type);
+        types_of_params.push_back(type);
         current_scope->PushIndetifier(type, name);
     } else {
         throw std::string("redefining the variable " + name + " in line " + std::to_string(current_lexeme.num_of_string_));
@@ -278,20 +267,20 @@ std::vector<std::string> Parametres() {
     while (current_lexeme.content_ != ")") {
         if (current_lexeme.content_ != ",") throw std::string(", was expected in line " + std::to_string(current_lexeme.num_of_string_));
         gl();
-        if (!CorrectType(current_lexeme.content_, 0)) throw std::string("invalid type in the parameter in line " + std::to_string(current_lexeme.num_of_string_));
+        if (!CorrectType(current_lexeme.content_)) throw std::string("invalid type in the parameter in line " + std::to_string(current_lexeme.num_of_string_));
         std::string type = current_lexeme.content_;
         gl();
         std::string name = current_lexeme.content_;
         Identifier();
         if (!current_scope->IsIdentifier(name)) {
-            types.push_back(type);
+            types_of_params.push_back(type);
             current_scope->PushIndetifier(type, name);
         }
         else {
             throw std::string("redefining the variable " + name + " in line " + std::to_string(current_lexeme.num_of_string_));
         }
     }
-    return types;
+    return types_of_params;
 }
 
 void Cin() {
@@ -313,27 +302,25 @@ void Cout() {
     gl();
     if (current_lexeme.content_ != "<<") throw std::string("<< was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
-    Expression();
-    control_types_in_expressions.GetTypeFromStack();
+    Expression12();
     while (current_lexeme.content_ == "<<") {
         gl();
-        Expression();
-        control_types_in_expressions.GetTypeFromStack();
+        Expression12();
     }
     if (current_lexeme.content_ != ";") throw std::string("; was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
 }
 
-void Local(std::string function_name);
+void Local();
 
-void Block(bool new_scope = true, std::string function_name = "") {
+void Block(bool new_scope = true) {
     if (current_lexeme.content_ != "{") {
         throw std::string("{ was expected in line " + std::to_string(current_lexeme.num_of_string_));
     }
     gl();
-    if (new_scope) current_scope = current_scope->CreateNewScope();
+    if (new_scope) current_scope = current_scope->CreateNewScope(current_scope->GetFunctionName());
     while (current_lexeme.content_ != "}") {
-        Local(function_name);
+        Local();
     }
     if (current_lexeme.content_ != "}") {
         throw std::string("} was expected in line " + std::to_string(current_lexeme.num_of_string_));
@@ -346,8 +333,7 @@ void If() {
     gl();
     if (current_lexeme.content_ != "(") throw std::string("( was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
-    Expression();
-    if (control_types_in_expressions.GetTypeFromStack() != "bool") throw std::string("the expression must be of the boolean type in line " + std::to_string(current_lexeme.num_of_string_));
+    if (Expression12() != "bool") throw std::string("the expression must be of the boolean type in line " + std::to_string(current_lexeme.num_of_string_));
     if (current_lexeme.content_ != ")") throw std::string(") was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
     Block();
@@ -361,8 +347,7 @@ void While() {
     gl();
     if (current_lexeme.content_ != "(") throw std::string("( was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
-    Expression();
-    if (control_types_in_expressions.GetTypeFromStack() != "bool") throw std::string("the expression must be of the boolean type in line " + std::to_string(current_lexeme.num_of_string_));
+    if (Expression12() != "bool") throw std::string("the expression must be of the boolean type in line " + std::to_string(current_lexeme.num_of_string_));
     if (current_lexeme.content_ != ")") throw std::string(") was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
     Block();
@@ -370,86 +355,50 @@ void While() {
 
 void For() {
     gl();
-    current_scope = current_scope->CreateNewScope();
+    current_scope = current_scope->CreateNewScope(current_scope->GetFunctionName());
     if (current_lexeme.content_ != "(") throw std::string("( was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
     if (current_lexeme.content_ != ";") {
-        std::string type, name;
-        bool bdec = false;
+        std::string type_initialized_variables, name_initialized_variables;
         if (current_lexeme.type_ == "official word") {
             if (!CorrectType(current_lexeme.content_, 0, 0)) throw std::string("invalid type in line " + std::to_string(current_lexeme.num_of_string_));
-            type = current_lexeme.content_;
+            type_initialized_variables = current_lexeme.content_;
             gl();
-            name = current_lexeme.content_;
-            Expression(type, type);
-            bdec = true;
-        } else {
-            name = current_lexeme.content_;
-            type = current_scope->GetType(name);
-            Expression(type, type);
-        }
-        control_types_in_expressions.GetTypeFromStack();
-        if (bdec) {
-            if (!current_scope->IsIdentifier(name)) {
-                current_scope->PushIndetifier(type, name);
-            } else {
-                throw std::string("redefining the variable " + name + " in line " + std::to_string(current_lexeme.num_of_string_));
+            name_initialized_variables = current_lexeme.content_;
+            if (!current_scope->IsIdentifierMe(name_initialized_variables)) {
+                current_scope->PushIndetifier(type_initialized_variables, name_initialized_variables);
             }
-        } else {
-            if (!current_scope->IsIdentifier(name)) throw std::string("variable " + name + " is not declared in line " + std::to_string(current_lexeme.num_of_string_));
         }
+        Expression12();
         while (current_lexeme.content_ != ";") {
             if (current_lexeme.content_ != ",") throw std::string(", was expected in line " + std::to_string(current_lexeme.num_of_string_));
             gl();
-            std::string type, name;
-            bool bdec = false;
             if (current_lexeme.type_ == "official word") {
                 if (!CorrectType(current_lexeme.content_, 0, 0)) throw std::string("invalid type in line " + std::to_string(current_lexeme.num_of_string_));
-                type = current_lexeme.content_;
+                type_initialized_variables = current_lexeme.content_;
                 gl();
-                name = current_lexeme.content_;
-                Expression(type, type);
-                bdec = true;
-            }
-            else {
-                name = current_lexeme.content_;
-                type = current_scope->GetType(name);
-                Expression(type, type);
-            }
-            control_types_in_expressions.GetTypeFromStack();
-            if (bdec) {
-                if (!current_scope->IsIdentifier(name)) {
-                    current_scope->PushIndetifier(type, name);
-                }
-                else {
-                    throw std::string("redefining the variable " + name + " in line " + std::to_string(current_lexeme.num_of_string_));
+                name_initialized_variables = current_lexeme.content_;
+                if (!current_scope->IsIdentifierMe(name_initialized_variables)) {
+                    current_scope->PushIndetifier(type_initialized_variables, name_initialized_variables);
                 }
             }
-            else {
-                if (!current_scope->IsIdentifier(name)) throw std::string("variable " + name + " is not declared in line " + std::to_string(current_lexeme.num_of_string_));
-            }
+            Expression12();
         }
     }
     if (current_lexeme.content_ != ";") throw std::string("; was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
-    if (current_lexeme.content_ != ";") {
-        Expression();
-        if (control_types_in_expressions.GetTypeFromStack() != "bool") throw std::string("the expression must be of the boolean type in line " + std::to_string(current_lexeme.num_of_string_));
+    //  ---------------------------------------------------------------------------------------------
+    if (current_lexeme.content_ != ";") {   //  булевское выражение
+        if (Expression12() != "bool") throw std::string("the expression must be of the boolean type in line " + std::to_string(current_lexeme.num_of_string_));
     }
     if (current_lexeme.content_ != ";") throw std::string("; was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
     if (current_lexeme.content_ != ")") {
-        if (current_lexeme.type_ != "identifier") throw std::string("lvalue must be identifier" + std::to_string(current_lexeme.num_of_string_));
-        if (!current_scope->IsIdentifier(current_lexeme.content_)) throw std::string("variable is not declared in line " + std::to_string(current_lexeme.num_of_string_));
-        Expression(current_scope->GetType(current_lexeme.content_));
-        control_types_in_expressions.GetTypeFromStack();
+        Expression12();
         while (current_lexeme.content_ != ")") {
-            if (current_lexeme.content_ != ",") throw std::string(", was expected in line " + std::to_string(current_lexeme.num_of_string_));;
+            if (current_lexeme.content_ != ",") throw std::string(", was expected in line " + std::to_string(current_lexeme.num_of_string_));
             gl();
-            if (current_lexeme.type_ != "identifier") throw std::string("lvalue must be identifier" + std::to_string(current_lexeme.num_of_string_));
-            if (!current_scope->IsIdentifier(current_lexeme.content_)) throw std::string("variable is not declared in line " + std::to_string(current_lexeme.num_of_string_));
-            Expression(current_scope->GetType(current_lexeme.content_));
-            control_types_in_expressions.GetTypeFromStack();
+            Expression12();
         }
     }
     gl();
@@ -457,48 +406,47 @@ void For() {
 }
 
 void VariableDecloration() {
-    std::string type = current_lexeme.content_, masstype;
-    if (current_lexeme.content_ == "mass") {  //typeeeeeeee
+    std::string type = current_lexeme.content_, type_of_list;
+    bool isList = false;
+    if (current_lexeme.content_ == "list") {
+        isList = true;
         gl();
-        if (current_lexeme.content_ != "<") throw std::string("type od mass ne ykazan was expected in line " + std::to_string(current_lexeme.num_of_string_));
+        if (current_lexeme.content_ != "<") throw std::string("< was expected in line " + std::to_string(current_lexeme.num_of_string_));
         gl();
-        if (!CorrectType(current_lexeme.content_, 0)) throw std::string("incorrect type od mass in line " + std::to_string(current_lexeme.num_of_string_));
-        masstype = current_lexeme.content_;
+        if (!CorrectType(current_lexeme.content_, 0)) throw std::string("the expression must be of the integer type in line " + std::to_string(current_lexeme.num_of_string_));
+        type_of_list = current_lexeme.content_;
         gl();
-        if (current_lexeme.content_ != ">") throw std::string("type od mass ne ykazan was expected in line " + std::to_string(current_lexeme.num_of_string_));
+        if (current_lexeme.content_ != ">") throw std::string("> was expected in line " + std::to_string(current_lexeme.num_of_string_));
     }
     gl();
-    std::string name = current_lexeme.content_;
-    Expression(type, type);
-    control_types_in_expressions.GetTypeFromStack();
-    if (!current_scope->IsIdentifierMe(name)) {
-        if (type == "mass") {
-            if (current_lexeme.content_ != "[") throw std::string("[ was expected in line " + std::to_string(current_lexeme.num_of_string_));
-            gl();
-            Expression();
-            if (control_types_in_expressions.GetTypeFromStack() != "int") throw std::string("must be int in [] in line " + std::to_string(current_lexeme.num_of_string_));
-            if (current_lexeme.content_ != "]") throw std::string("] was expected in line " + std::to_string(current_lexeme.num_of_string_));
-            gl();
-            current_scope->PushIndetifier(type + masstype, name);
-        }
-        else
-        {
-            current_scope->PushIndetifier(type, name);
-        }
-    } else {
-        throw std::string("redefining the variable " + name + " in line " + std::to_string(current_lexeme.num_of_string_));
+    std::string name_of_variable = current_lexeme.content_;
+    if (current_scope->IsIdentifierMe(name_of_variable)) throw std::string("redefining the variable " + name_of_variable + " in line " + std::to_string(current_lexeme.num_of_string_));
+    if (isList) {
+        current_scope->PushIndetifier(type + type_of_list, name_of_variable);
+        gl();
+        if (current_lexeme.content_ != "[") throw std::string("[ was expected in line " + std::to_string(current_lexeme.num_of_string_));
+        gl();
+        if (Expression12() != "int") throw std::string("the expression must be of the integer type in line " + std::to_string(current_lexeme.num_of_string_));
+        if (current_lexeme.content_ != "]") throw std::string("] was expected in line " + std::to_string(current_lexeme.num_of_string_));
+        gl();
+    }
+    else
+    {
+        current_scope->PushIndetifier(type, name_of_variable);
+        Expression12();
     }
     while (current_lexeme.content_ == ",") {
         gl();
-        name = current_lexeme.content_;
-        Expression(type, type);
-        control_types_in_expressions.GetTypeFromStack();
-        if (!current_scope->IsIdentifier(name)) {
-            current_scope->PushIndetifier(type, name);
+        name_of_variable = current_lexeme.content_;
+        if (current_scope->IsIdentifierMe(name_of_variable)) throw std::string("redefining the variable " + name_of_variable + " in line " + std::to_string(current_lexeme.num_of_string_));
+        if (isList) {
+            current_scope->PushIndetifier(type + type_of_list, name_of_variable);
         }
-        else {
-            throw std::string("redefining the variable " + name + " in line " + std::to_string(current_lexeme.num_of_string_));
+        else
+        {
+            current_scope->PushIndetifier(type, name_of_variable);
         }
+        Expression12();
     }
     if (current_lexeme.content_ != ";") throw std::string("; was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
@@ -510,69 +458,69 @@ void Return(std::string function_name) {
         gl();
         return;
     }
-    Expression(current_scope->GetType(current_lexeme.content_));
-    if (control_types_in_expressions.GetTypeFromStack() !=  table_of_functions[function_name].type_) throw std::string("the type of the returned value does not match the type of the function in line " + std::to_string(current_lexeme.num_of_string_));
+    if (Expression12() !=  table_of_functions[function_name].type_) throw std::string("the type of the returned value does not match the type of the function in line " + std::to_string(current_lexeme.num_of_string_));
     if (current_lexeme.content_ != ";") throw std::string("; was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
 }
 
-void FunctionCall(bool vlozh = false) {
-    std::string name = current_lexeme.content_;
-    std::vector<std::string> types;
+void FunctionCall(bool nested_function = false) {
+    std::string function_name = current_lexeme.content_;
+    std::vector<std::string> types_function_arguments;
     gl();
     if (current_lexeme.content_ != "(") throw std::string("( was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
     if (current_lexeme.content_ != ")") {
         if (current_lexeme.type_ == "identifier" && lexemes[index + 1].content_ == "(") {
+            std::string name_of_function_in_args = current_lexeme.content_;
             FunctionCall(true);
-            types.push_back(table_of_functions[name].type_);
+            types_function_arguments.push_back(table_of_functions[name_of_function_in_args].type_);
         }
         else if (current_lexeme.type_ == "identifier" && lexemes[index + 1].content_ == "[") {
-            std::string name = current_lexeme.content_;
+            std::string name_of_list_in_args = current_lexeme.content_;
             gl();
             gl();
-            Expression();
+            if (Expression12() != "int") throw std::string("the expression must be of the integer type in line " + std::to_string(current_lexeme.num_of_string_));
+            if (current_lexeme.content_ != "]") throw std::string("] was expected in line " + std::to_string(current_lexeme.num_of_string_));
             gl();
-            types.push_back(current_scope->GetType(name).substr(4));
+            types_function_arguments.push_back(current_scope->GetType(name_of_list_in_args).substr(4));
         }
         else
         {
-            Expression();
-            types.push_back(control_types_in_expressions.GetTypeFromStack());
+            types_function_arguments.push_back(Expression12());
         }
         while (current_lexeme.content_ == ",") {
             gl();
             if (current_lexeme.type_ == "identifier" && lexemes[index + 1].content_ == "(") {
+                std::string name_of_function_in_args = current_lexeme.content_;
                 FunctionCall(true);
-                types.push_back(table_of_functions[name].type_);
+                types_function_arguments.push_back(table_of_functions[name_of_function_in_args].type_);
             }
             else if (current_lexeme.type_ == "identifier" && lexemes[index + 1].content_ == "[") {
-                std::string name = current_lexeme.content_;
+                std::string name_of_list_in_args = current_lexeme.content_;
                 gl();
                 gl();
-                Expression();
+                if (Expression12() != "int") throw std::string("the expression must be of the integer type in line " + std::to_string(current_lexeme.num_of_string_));
+                if (current_lexeme.content_ != "]") throw std::string("] was expected in line " + std::to_string(current_lexeme.num_of_string_));
                 gl();
-                types.push_back(current_scope->GetType(name).substr(4));
+                types_function_arguments.push_back(current_scope->GetType(name_of_list_in_args).substr(4));
             }
             else
             {
-                Expression();
-                types.push_back(control_types_in_expressions.GetTypeFromStack());
+                types_function_arguments.push_back(Expression12());
             }
         }
     }
-    std::string error = IsFunction(name, types);
+    std::string error = CheckCorrectFunction(function_name, types_function_arguments);
     if (error != "ok") throw std::string(error + "in line " + std::to_string(current_lexeme.num_of_string_));
     if (current_lexeme.content_ != ")") throw std::string(") was expected in line " + std::to_string(current_lexeme.num_of_string_));
     gl();
-
-    if (!vlozh) {
+    if (!nested_function) {
         if (current_lexeme.content_ != ";") throw std::string("; was expected in line " + std::to_string(current_lexeme.num_of_string_));
         gl();
     }
 }
 
-void Local(std::string function_name = "") {
+void Local() {
     if (CorrectType(current_lexeme.content_)) {
         VariableDecloration();
         return;
@@ -582,8 +530,7 @@ void Local(std::string function_name = "") {
             FunctionCall();
             return;
         }
-        Expression(current_scope->GetType(current_lexeme.content_));
-        control_types_in_expressions.GetTypeFromStack();
+        Expression12();
         if (current_lexeme.content_ != ";") {
             throw std::string("; was expected in line " + std::to_string(current_lexeme.num_of_string_));
         }
@@ -611,32 +558,33 @@ void Local(std::string function_name = "") {
         return;
     }
     if (current_lexeme.content_ == "return") {
-        Return(function_name);
+        Return(current_scope->GetFunctionName());
         return;
     }
-    throw std::string("Variable decloration or assignment or .... was expected in line " + std::to_string(current_lexeme.num_of_string_));
-}//JI3EWJFFFFFFFFFFFFFFFFFFF
+    throw std::string("operation was expected in line " + std::to_string(current_lexeme.num_of_string_));
+}
 
 void FunctionDecloration() {
-    std::string type = current_lexeme.content_;
+    std::string function_type = current_lexeme.content_;
     gl();
-    std::string name = current_lexeme.content_;
+    std::string function_name = current_lexeme.content_;
     Identifier();
     if (current_lexeme.content_ != "(") {
         throw std::string("( was expected in line " + std::to_string(current_lexeme.num_of_string_));
     }
     gl();
-    if (!addFunction(type, name, Parametres())) {
-        throw std::string("redefining the function " + name + " in line " + std::to_string(current_lexeme.num_of_string_));
+    if (!AddFunction(function_type, function_name, Parametres(function_name))) {
+        throw std::string("redefining the function " + function_name + " in line " + std::to_string(current_lexeme.num_of_string_));
     }
     if (current_lexeme.content_ != ")") {
         throw std::string(") was expected in line " + std::to_string(current_lexeme.num_of_string_));
     }
     gl();
-    Block(false, name);
+    Block(false);
 }
 
-void Decloration() {
+void Global() {
+    if (current_lexeme.type_ != "official word") throw std::string("variable or function decloration was expected in line " + std::to_string(current_lexeme.num_of_string_));
     int index_of_type = index;
     if (current_lexeme.content_ == "void") {
         FunctionDecloration();
@@ -659,23 +607,6 @@ void Decloration() {
     throw std::string("variable or function decloration was expected in line " + std::to_string(current_lexeme.num_of_string_));
 }
 
-void Global() {
-    if (current_lexeme.type_ == "official word") {
-        Decloration();
-        return;
-    }
-    if (current_lexeme.type_ == "identifier") {
-        Expression();
-        control_types_in_expressions.GetTypeFromStack();
-        if (current_lexeme.content_ != ";") {
-            throw std::string("; was expected in line " + std::to_string(current_lexeme.num_of_string_));
-        }
-        gl();
-        return;
-    }
-    throw std::string("decloration or assignment was expected in line " + std::to_string(current_lexeme.num_of_string_));
-}
-
 void Program() {
     gl();
     while (index != lexemes.size()) {
@@ -687,9 +618,7 @@ void SyntaxAnalyzer(std::vector<Lexeme> lexemes_) {
     swap(lexemes, lexemes_);
     try {
         Program();
-        if (index < lexemes.size()) {
-            throw std::string("characters are expected to enter");
-        }
+        std::cout << "ok";
     }
     catch (std::string str) {
         std::cout << str;

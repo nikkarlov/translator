@@ -15,65 +15,72 @@ class Scope
 {
 public:
     Scope() {
-        table_of_tnds_.clear();
+        table_of_type_name_data_.clear();
         childs_.resize(0);
         parent_ = nullptr;
+        function_name_ = "0global";
     }
     void PushIndetifier(std::string type, std::string name, std::string value = "") {
-        table_of_tnds_[name] = { type, name, value };
+        table_of_type_name_data_[name] = { type, name, value };
     }
     bool IsIdentifierMe(std::string name) {
-        return table_of_tnds_.count(name);
-    }
-    bool IsIdentifierParent(std::string name) {
-        return parent_ && parent_->IsIdentifier(name);
+        return table_of_type_name_data_.count(name);
     }
     bool IsIdentifier(std::string name) {
         return IsIdentifierMe(name) || IsIdentifierParent(name);
     }
     std::string GetType(std::string identifier) {
-        if (!table_of_tnds_.count(identifier)) return parent_->GetType(identifier);
-        return table_of_tnds_[identifier].type_;
+        if (!table_of_type_name_data_.count(identifier)) return parent_ == nullptr ? "error" : parent_->GetType(identifier);
+        return table_of_type_name_data_[identifier].type_;
     }
-    Scope* CreateNewScope() {
+    Scope* CreateNewScope(std::string function_name) {
         Scope* new_scope = new Scope();
         childs_.push_back(new_scope);
         new_scope->parent_ = this;
+        new_scope->function_name_ = function_name;
         return new_scope;
     }
     Scope* BackPreviousScope() {
         return parent_;
     }
+    std::string GetFunctionName() {
+        return function_name_;
+    }
 private:
-    std::map <std::string, TypeNameData> table_of_tnds_;  // table of {type, name, data}
+    std::string function_name_;
+    std::map <std::string, TypeNameData> table_of_type_name_data_;
     std::vector<Scope*> childs_;
     Scope* parent_;
+
+    bool IsIdentifierParent(std::string name) {
+        return parent_ && parent_->IsIdentifier(name);
+    }
 };
 
 struct TypeNameParams
 {
     std::string type_, name_;
-    std::vector<std::string> types_;
+    std::vector<std::string> types_of_params_;
 };
 
 std::map <std::string, TypeNameParams> table_of_functions;
 
-std::string IsFunction(std::string name, std::vector<std::string> types) {
-    if (table_of_functions.count(name) == 0) return "the function " + name + " is not declared ";
-    if (table_of_functions[name].types_.size() != types.size()) return "incorrect number of arguments specified ";
-    for (int i = 0; i < table_of_functions[name].types_.size(); ++i) {
-        if (table_of_functions[name].types_[i] != types[i]) return "the type of the " + std::to_string(i + 1) + " formal parameter does not match the actual one ";
+std::string CheckCorrectFunction(std::string name, std::vector<std::string> types_of_params) {
+    if (!table_of_functions.count(name)) return "the function " + name + " is not declared ";
+    if (table_of_functions[name].types_of_params_.size() != types_of_params.size()) return "incorrect number of arguments specified ";
+    for (int i = 0; i < table_of_functions[name].types_of_params_.size(); ++i) {
+        if (table_of_functions[name].types_of_params_[i] != types_of_params[i]) return "the type of the " + std::to_string(i + 1) + " formal parameter does not match the actual one ";
     }
     return "ok";
 }
 
-bool addFunction(std::string type, std::string name, std::vector<std::string> types) {
+bool AddFunction(std::string type, std::string name, std::vector<std::string> types_of_params) {
     if (table_of_functions.count(name)) return false;
-    table_of_functions[name] = { type, name, types };
+    table_of_functions[name] = { type, name, types_of_params };
     return true;
 }
 
-class ControlTypesInExpressions
+class ControlTypesInExpressions //  DODELATTT
 {
 public:
     void Push(std::string string) {
@@ -87,8 +94,8 @@ public:
         std::string operand1 = stack_of_types_and_operations_.top();
         stack_of_types_and_operations_.pop();
 
-        if (operand1.substr(0, 4) == "mass") operand1 = operand1.substr(4);
-        if (operand2.substr(0, 4) == "mass") operand2 = operand2.substr(4);
+        if (operand1.substr(0, 4) == "list") operand1 = operand1.substr(4);
+        if (operand2.substr(0, 4) == "list") operand2 = operand2.substr(4);
 
         if (operation == "+" || operation == "-" || operation == "*" || operation == "/" || operation == "%") {
             if (operand1 == "int" && operand2 == "int") {

@@ -9,17 +9,18 @@ string str = "kdo";
 int b = 2, a;
 
 int main(){
+	list<int> mass1 [2];
+	mass1[mass1[1]] = 3;
 	float b;
-	float i = 5.2;
-	//float fl = 1.2 + h;
+	//float i = 5.2;
+	float fl = 1.2 + a;
 	cout << a;
 	gcd(5,a);
-	mass<int> mass1 [2];
-	mass1[0] = 3;
-	mass1[a] = 3;
-	gcd(gcd(mass1[1+2], 2), mass1);
-
-	//int i = false+true;
+	mass1[a-a-a-a] = a-a-a;
+	mass1[mass1[1]] = 3;
+	gcd(gcd(mass1[1+mass1[mass1[2]]], 2), mass1[78787]);
+	// в 22 строке закоментить и исправить ошибку
+	int i = false+true;
 	for (mass1[1] = 1, i=mass1[1], int j = 2, char c = '2';j <7;i=3,j=3, c +=2) {
 	a-=1;
 	}

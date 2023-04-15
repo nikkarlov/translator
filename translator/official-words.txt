@@ -12,6 +12,6 @@ char
 string
 int
 float
-mass
+list
 true
 false
