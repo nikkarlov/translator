@@ -1,7 +1,4 @@
-int gcd(int a, int b){
-	int d = 0;
-	return d;
-}
+int gcd(int a, int b);
 
 
 string str = "kdo";
@@ -42,4 +39,8 @@ int main(){
 	cout<<c;
 	c-=1;
 	}
+}
+
+int gcd(int a, int b){
+return 0;
 }

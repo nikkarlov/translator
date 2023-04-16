@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClInclude Include="lexeme.h" />
     <ClInclude Include="lexical-analyzer.h" />
+    <ClInclude Include="poliz-generator.h" />
     <ClInclude Include="semantic-analyzer.h" />
     <ClInclude Include="syntax-analyzer.h" />
   </ItemGroup>

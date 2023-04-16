@@ -4,12 +4,19 @@
 #include <map>
 #include <stack>
 #include "lexeme.h"
+#include "poliz-generator.h"
 Lexeme current_lexeme;
+
+int memory = 0;
 
 struct TypeNameData
 {
-    std::string type_, name_, data_;
+    std::string type_, name_, data_, list_type_;
+    int list_size_;
+    std::map<int, std::string> list_data_;
 };
+
+std::map <int, std::string> table_of_adresses;
 
 class Scope
 {
@@ -20,8 +27,9 @@ public:
         parent_ = nullptr;
         function_name_ = "0global";
     }
-    void PushIndetifier(std::string type, std::string name, std::string value = "") {
-        table_of_type_name_data_[name] = { type, name, value };
+    void PushIndetifier(std::string type, std::string name, std::string list_type = "") {
+        table_of_type_name_data_[name] = { type, name, "", list_type };
+        table_of_adresses[memory++] = name;
     }
     bool IsIdentifierMe(std::string name) {
         return table_of_type_name_data_.count(name);
@@ -29,9 +37,9 @@ public:
     bool IsIdentifier(std::string name) {
         return IsIdentifierMe(name) || IsIdentifierParent(name);
     }
-    std::string GetType(std::string identifier) {
-        if (!table_of_type_name_data_.count(identifier)) return parent_ == nullptr ? "error" : parent_->GetType(identifier);
-        return table_of_type_name_data_[identifier].type_;
+    std::string GetType(std::string identifier, bool list_type = false) {
+        if (!table_of_type_name_data_.count(identifier)) return parent_->GetType(identifier, list_type);
+        return list_type ? table_of_type_name_data_[identifier].list_type_ : table_of_type_name_data_[identifier].type_;
     }
     Scope* CreateNewScope(std::string function_name) {
         Scope* new_scope = new Scope();
@@ -61,6 +69,8 @@ struct TypeNameParams
 {
     std::string type_, name_;
     std::vector<std::string> types_of_params_;
+    bool prototype_ = false;
+    bool realization_ = false;
 };
 
 std::map <std::string, TypeNameParams> table_of_functions;
@@ -75,7 +85,15 @@ std::string CheckCorrectFunction(std::string name, std::vector<std::string> type
 }
 
 bool AddFunction(std::string type, std::string name, std::vector<std::string> types_of_params) {
-    if (table_of_functions.count(name)) return false;
+    if (table_of_functions.count(name)) {
+        if (!table_of_functions[name].realization_ && table_of_functions[name].prototype_) {
+            if (table_of_functions[name].name_ == name && table_of_functions[name].type_ == type && table_of_functions[name].types_of_params_ == types_of_params) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
     table_of_functions[name] = { type, name, types_of_params };
     return true;
 }
@@ -93,9 +111,9 @@ public:
         stack_of_types_and_operations_.pop();
         std::string operand1 = stack_of_types_and_operations_.top();
         stack_of_types_and_operations_.pop();
-
-        if (operand1.substr(0, 4) == "list") operand1 = operand1.substr(4);
-        if (operand2.substr(0, 4) == "list") operand2 = operand2.substr(4);
+        poliz.PolizPush(operation);
+        //if (operand1.substr(0, 4) == "list") operand1 = operand1;
+        //if (operand2.substr(0, 4) == "list") operand2 = operand2.substr(4);
 
         if (operation == "+" || operation == "-" || operation == "*" || operation == "/" || operation == "%") {
             if (operand1 == "int" && operand2 == "int") {
@@ -370,7 +388,7 @@ public:
         stack_of_types_and_operations_.pop();
         std::string operation = stack_of_types_and_operations_.top();
         stack_of_types_and_operations_.pop();
-
+        poliz.PolizPush(operation);
         if (operation == "!" || operation == "~") {
             if (operand == "int") {
                 Push("bool");
