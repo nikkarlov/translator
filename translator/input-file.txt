@@ -1,24 +1,33 @@
 int gcd(int a, int b);
 
+int func1(int a, int b, int c){
+	if (a==-1) {return 3;}
+	return b + c;
+}
 
-string str = "kdo";
-
-int b = 2, a;
+int retB(){
+	return 2;
+}
 
 int main(){
-	list<int> mass1 [2];
+	int b =2, a = 5;
+	list<int> mass1 [b*a+2%a];
+	input >> a >> b;
+	mass1[1] = 0;
 	mass1[mass1[1]] = 3;
-	float b;
+	float bq;
 	//float i = 5.2;
 	float fl = 1.2 + a;
-	cout << a;
-	gcd(5,a);
-	mass1[a-a-a-a] = a-a-a;
+	//проверять отсюда
+	print(a);
+	print(a, a, a, 1);
+	print(gcd(5,a));
+	//mass1[a-a-a-a] = a-a-a;
 	mass1[mass1[1]] = 3;
-	gcd(gcd(mass1[1+mass1[mass1[2]]], 2), mass1[78787]);
-	// в 22 строке закоментить и исправить ошибку
-	int i = false+true;
-	for (mass1[1] = 1, i=mass1[1], int j = 2, char c = '2';j <7;i=3,j=3, c +=2) {
+	mass1[2] = -1;
+	int d = gcd(mass1[1], 2);
+	int i = 2;
+	for (mass1[1] = 1, i=mass1[1], int j = 2, char c = '2';j >0;i=3,j-=1, c +=2) {
 	a-=1;
 	}
 	if (a == 2){
@@ -27,7 +36,7 @@ int main(){
 	}
 	gcd(0,0);
 	int c;
-	cin >> mass1[0];
+	input >> mass1[0] >> c >> b;
 	if (c == 5*(1 - 2 % (a - 5))){
 	 a = 3;
 	}
@@ -35,12 +44,18 @@ int main(){
 		int b =4;
 		b = 3;
 	}
-	while(c<0){
-	cout<<c;
+	while(c==0){
+	print(c);
 	c-=1;
 	}
+	b=b/b;
+	return 0;
 }
 
 int gcd(int a, int b){
-return 0;
+    if(b==0){
+     return a;
+    }
+    return gcd(b, a % b);
+	return 0;
 }

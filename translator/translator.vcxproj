@@ -142,6 +142,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="executor-program.h" />
     <ClInclude Include="lexeme.h" />
     <ClInclude Include="lexical-analyzer.h" />
     <ClInclude Include="poliz-generator.h" />
@@ -149,8 +150,10 @@
     <ClInclude Include="syntax-analyzer.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="input-data.txt" />
     <Text Include="input-file.txt" />
     <Text Include="official-words.txt" />
+    <Text Include="output-data.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

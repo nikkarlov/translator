@@ -35,12 +35,21 @@
     <ClInclude Include="poliz-generator.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="executor-program.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="input-file.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
     <Text Include="official-words.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
+    <Text Include="input-data.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
+    <Text Include="output-data.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
   </ItemGroup>

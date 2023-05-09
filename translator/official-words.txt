@@ -2,8 +2,8 @@ return
 for
 if
 while
-cout
-cin
+print
+input
 if
 else
 void

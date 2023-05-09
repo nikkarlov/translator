@@ -25,7 +25,7 @@ public:
         table_of_type_name_data_.clear();
         childs_.resize(0);
         parent_ = nullptr;
-        function_name_ = "0global";
+        function_name_ = "global";
     }
     void PushIndetifier(std::string type, std::string name, std::string list_type = "") {
         table_of_type_name_data_[name] = { type, name, "", list_type };
@@ -71,6 +71,7 @@ struct TypeNameParams
     std::vector<std::string> types_of_params_;
     bool prototype_ = false;
     bool realization_ = false;
+    int adress_of_start_;
 };
 
 std::map <std::string, TypeNameParams> table_of_functions;
@@ -98,6 +99,10 @@ bool AddFunction(std::string type, std::string name, std::vector<std::string> ty
     return true;
 }
 
+bool isFunction(std::string name) {
+    return table_of_functions.count(name);
+}
+
 class ControlTypesInExpressions //  DODELATTT
 {
 public:
@@ -111,7 +116,7 @@ public:
         stack_of_types_and_operations_.pop();
         std::string operand1 = stack_of_types_and_operations_.top();
         stack_of_types_and_operations_.pop();
-        poliz.PolizPush(operation);
+        poliz.Push(operation);
         //if (operand1.substr(0, 4) == "list") operand1 = operand1;
         //if (operand2.substr(0, 4) == "list") operand2 = operand2.substr(4);
 
@@ -388,7 +393,7 @@ public:
         stack_of_types_and_operations_.pop();
         std::string operation = stack_of_types_and_operations_.top();
         stack_of_types_and_operations_.pop();
-        poliz.PolizPush(operation);
+        poliz.Push("unary_" + operation);
         if (operation == "!" || operation == "~") {
             if (operand == "int") {
                 Push("bool");
@@ -405,6 +410,9 @@ public:
             if (operand == "string") {
                 //error
             }
+        }
+        if (operation == "-" || operation == "+") {
+            Push(operand);
         }
     }
     std::string GetTypeFromStack() {
