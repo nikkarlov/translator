@@ -121,7 +121,7 @@ public:
             }
             if (operand1 == "int" && operand2 == "float") {
                 Push(operand2);
-                if (operation == "%") throw "int and float" + std::to_string(current_lexeme.num_of_string_);
+                if (operation == "%") Error(operand1, operation, operand2);
             }
             if (operand1 == "int" && operand2 == "bool") {
                 Push(operand1);
@@ -130,27 +130,27 @@ public:
                 Push(operand1);
             }
             if (operand1 == "int" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
             
             if (operand1 == "float" && operand2 == "int") {
                 Push(operand1);
-                if (operation == "%") throw "int and float" + std::to_string(current_lexeme.num_of_string_);
+                if (operation == "%") Error(operand1, operation, operand2);
             }
             if (operand1 == "float" && operand2 == "float") {
                 Push(operand1);
-                if (operation == "%");//error
+                if (operation == "%") Error(operand1, operation, operand2);
             }
             if (operand1 == "float" && operand2 == "bool") {
                 Push(operand1);
-                if (operation == "%");//error
+                if (operation == "%") Error(operand1, operation, operand2);
             }
             if (operand1 == "float" && operand2 == "char") {
                 Push(operand1);
-                if (operation == "%");//error
+                if (operation == "%") Error(operand1, operation, operand2);
             }
             if (operand1 == "float" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "bool" && operand2 == "int") {
@@ -158,7 +158,7 @@ public:
             }
             if (operand1 == "bool" && operand2 == "float") {
                 Push(operand2);
-                if (operation == "%");//error
+                if (operation == "%") Error(operand1, operation, operand2);
             }
             if (operand1 == "bool" && operand2 == "bool") {
                 Push(operand1);
@@ -167,7 +167,7 @@ public:
                 Push("int");
             }
             if (operand1 == "bool" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "char" && operand2 == "int") {
@@ -175,7 +175,7 @@ public:
             }
             if (operand1 == "char" && operand2 == "float") {
                 Push(operand2);
-                if (operation == "%");//error
+                if (operation == "%") Error(operand1, operation, operand2);
             }
             if (operand1 == "char" && operand2 == "bool") {
                 Push("int");
@@ -188,25 +188,25 @@ public:
                 if (operation == "+") {
                     Push(operand2);
                 } else {
-                    //error;
+                    Error(operand1, operation, operand2);
                 }
             }
 
             if (operand1 == "string" && operand2 == "int") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "float") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "bool") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "char") {
                 if (operation == "+") {
                     Push(operand1);
                 }
                 else {
-                    //error;
+                    Error(operand1, operation, operand2);
                 }
             }
             if (operand1 == "string" && operand2 == "string") {
@@ -214,7 +214,7 @@ public:
                     Push(operand1);
                 }
                 else {
-                    //error;
+                    Error(operand1, operation, operand2);
                 }
             }
         }
@@ -232,7 +232,7 @@ public:
                 Push("bool");
             }
             if (operand1 == "int" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "float" && operand2 == "int") {
@@ -248,7 +248,7 @@ public:
                 Push("bool");
             }
             if (operand1 == "float" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "bool" && operand2 == "int") {
@@ -264,7 +264,7 @@ public:
                 Push("int");
             }
             if (operand1 == "bool" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "char" && operand2 == "int") {
@@ -280,21 +280,20 @@ public:
                 Push("bool");
             }
             if (operand1 == "char" && operand2 == "string") {
-
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "string" && operand2 == "int") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "float") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "bool") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "char") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "string") {
                 Push("bool");
@@ -314,7 +313,7 @@ public:
                 Push(operand1);
             }
             if (operand1 == "int" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "float" && operand2 == "int") {
@@ -330,7 +329,7 @@ public:
                 Push(operand1);
             }
             if (operand1 == "float" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "bool" && operand2 == "int") {
@@ -346,7 +345,7 @@ public:
                 Push(operand1);
             }
             if (operand1 == "bool" && operand2 == "string") {
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "char" && operand2 == "int") {
@@ -362,23 +361,45 @@ public:
                 Push(operand1);
             }
             if (operand1 == "char" && operand2 == "string") {
-
-                //error
+                Error(operand1, operation, operand2);
             }
 
             if (operand1 == "string" && operand2 == "int") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "float") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "bool") {
-                //error
+                Error(operand1, operation, operand2);
             }
             if (operand1 == "string" && operand2 == "char") {
                 Push(operand1);
             }
             if (operand1 == "string" && operand2 == "string") {
+                Push(operand1);
+            }
+        }
+        if (operation == "&&" || operation == "||") {
+            Push("bool");
+        }
+        if (operation == "*=" || operation == "/=") {
+            if ((operand1 != "int" && operand1 != "float" && operand1 != "bool") || 
+                (operand2 != "int" && operand2 != "float" && operand2 != "bool")) {
+                Error(operand1, operation, operand2);
+            }
+            else {
+                Push(operand1);
+            }
+
+        }
+        if (operation == "%=" || operation == "&=" || operation == "|=" ||
+            operation == "^=" || operation == "<<" || operation == ">>" || 
+            operation == "<<=" || operation == ">>=") {
+            if ((operand1 != "int" && operand1 != "bool") || (operand2 != "int" && operand2 != "bool")) {
+                Error(operand1, operation, operand2);
+            }
+            else {
                 Push(operand1);
             }
         }
@@ -403,7 +424,7 @@ public:
                 Push("int");
             }
             if (operand == "string") {
-                //error
+                throw "invalid expression type \"" + operation + " " + operand + "\" " + std::to_string(current_lexeme.num_of_string_);
             }
         }
     }
@@ -413,6 +434,9 @@ public:
         return str;
     }
 private:
+    void Error(std::string & str1, std::string& str2, std::string& str3) {
+        throw "invalid expression type \"" + str1 + " " + str2 + " " + str3 + "\" " + std::to_string(current_lexeme.num_of_string_);
+    }
     std::stack<std::string> stack_of_types_and_operations_;
 };
 

@@ -71,7 +71,7 @@ public:
                         str += program_text[i], str += program_text[i + 1], str += program_text[i + 2];
                         if (IsTripleOperation(str)) {
                             vector_of_lexemes_.push_back({ str, "operation", num_of_string });
-                            i++;
+                            i += 2;
                             continue;
                         }
                     }

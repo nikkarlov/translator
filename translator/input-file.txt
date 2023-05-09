@@ -17,6 +17,8 @@ int main(){
 	mass1[mass1[1]] = 3;
 	gcd(gcd(mass1[1+mass1[mass1[2]]], 2), mass1[78787]);
 	// в 22 строке закоментить и исправить ошибку
+	int bb = 5;
+	bb <<= true;
 	int i = false+true;
 	for (mass1[1] = 1, i=mass1[1], int j = 2, char c = '2';j <7;i=3,j=3, c +=2) {
 	a-=1;
